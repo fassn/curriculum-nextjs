@@ -6,6 +6,7 @@ import Input from './input'
 import Label from './label'
 import GoogleReCaptchaWrapper from './google-recaptcha-wrapper'
 import Textarea from './textarea'
+import addMessage from '../firebase/firestore/add-message'
 // import ValidationErrors from '../ValidationErrors'
 
 export default function WrappedContactForm() {
@@ -35,6 +36,7 @@ const ContactForm = () => {
     const submitForm = async event => {
         event.preventDefault()
 
+        addMessage(email, title, message)
         // sendEmail({ email, title, message, setErrors })
     }
 

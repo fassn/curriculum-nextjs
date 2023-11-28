@@ -21,16 +21,8 @@ const AboutMe = () => {
             <div className="hidden lg:block mx-auto">
                 <Image
                     src={profilePic}
-                    layout='intrinsic'
-                    alt='christopher fargere picture' />
-                {/* <UnoptimizedImage
-                    props={{
-                        src: profilePic,
-                        unoptimized: true,
-                        layout: 'intrinsic',
-                        alt: 'christopher fargere picture',
-                    }}
-                /> */}
+                    alt='christopher fargere picture'
+                />
             </div>
         </div>
     )

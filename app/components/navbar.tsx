@@ -78,7 +78,6 @@ const Navbar = () => {
                                 <Image
                                     src={envelope}
                                     alt='envelope'
-                                    layout='intrinsic'
                                 />
                             </DropdownLink>
                         </Dropdown>
@@ -148,7 +147,6 @@ const Navbar = () => {
                             <Image
                                 src='envelope'
                                 alt='envelope-icon'
-                                layout='intrinsic'
                             />
                         </ResponsiveNavLink>
                     </div>
