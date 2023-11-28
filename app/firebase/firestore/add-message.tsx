@@ -6,7 +6,6 @@ import { randomBytes } from "crypto";
 export default async function addMessage(email, title, message) {
     const db = getDatabase(firebaseApp)
     const id = getRandomUUID()
-    console.log({id});
     set(ref(db, 'messages/' + id), {
         email,
         title,

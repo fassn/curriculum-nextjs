@@ -9,7 +9,7 @@ export default function GoogleReCaptchaWrapper({
     children: React.ReactNode;
 }) {
     const recaptchaKey: string | undefined =
-        process?.env?.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+        process?.env?.NEXT_PUBLIC_RECAPTCHA_KEY;
     return (
     <GoogleReCaptchaProvider
         reCaptchaKey={recaptchaKey ?? "NOT DEFINED"}
