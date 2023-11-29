@@ -7,7 +7,7 @@ import Label from './label'
 import GoogleReCaptchaWrapper from './google-recaptcha-wrapper'
 import Textarea from './textarea'
 import addMessage from '../firebase/firestore/add-message'
-// import ValidationErrors from '../ValidationErrors'
+import ValidationErrors from './validation-errors'
 
 export default function WrappedContactForm() {
     return (
@@ -23,21 +23,20 @@ const ContactForm = () => {
     const [message, setMessage] = useState('')
     const [errors, setErrors] = useState([])
 
-    // const sendEmail = async ({ setErrors, ...props }) => {
-    //     setErrors([])
-
-    //     axios.post('api/message', props).catch(error => {
-    //         if (error.response.status !== 422) throw error
-
-    //         setErrors(Object.values(error.response.data.errors).flat())
-    //     })
-    // }
-
-    const submitForm = async event => {
+    const handleSubmit = async event => {
         event.preventDefault()
+        setErrors([])
 
-        addMessage(email, title, message)
-        // sendEmail({ email, title, message, setErrors })
+        const res = await addMessage(email, title, message)
+        if (res) {
+            setErrors([res])
+            return
+        }
+
+        setEmail('')
+        setTitle('')
+        setMessage('')
+        setErrors([])
     }
 
     return (
@@ -49,22 +48,20 @@ const ContactForm = () => {
                 <hr className="my-4" />
             </div>
             {/* Validation Errors */}
-            {/* <ValidationErrors className="mb-4" errors={errors} /> */}
+            <ValidationErrors className="mb-4" errors={errors} />
 
-            <form onSubmit={submitForm} className="max-w-lg">
+            <form onSubmit={handleSubmit} id='contact_form' className="max-w-lg">
                 {/* Email Address */}
-                <div>
-                    <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Email</Label>
 
-                    <Input
-                        id="email"
-                        type="email"
-                        value={email}
-                        className="block mt-1 w-full"
-                        onChange={event => setEmail(event.target.value)}
-                        required
-                    />
-                </div>
+                <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    className="block mt-1 w-full"
+                    onChange={event => setEmail(event.target.value)}
+                    required
+                />
 
                 {/* Title */}
                 <div className="mt-4">
