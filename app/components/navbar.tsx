@@ -10,6 +10,7 @@ import ResponsiveNavLink from './responsive-navlink'
 
 import envelope from '/public/envelope.png'
 import Image from 'next/image'
+import ThemeSwitcher from './theme-switcher'
 
 const Navbar = () => {
     const pathName = usePathname()
@@ -20,7 +21,7 @@ const Navbar = () => {
     const [open, setOpen] = useState(false)
 
     return (
-        <nav className="fixed top-0 right-0 left-0 mb-40 z-50 bg-white border-b border-gray-100">
+        <nav className="fixed top-0 right-0 left-0 mb-40 z-50 bg-white dark:bg-gray-700 border-b border-gray-100 dark:border-none">
             {/* Primary Navigation Menu */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
@@ -33,7 +34,7 @@ const Navbar = () => {
                         {/* Navigation Links */}
                         <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                             <NavLink
-                                className="link-color"
+                                className="text-[#b61d1d] dark:text-[#009ECA]"
                                 href={pdfCV}
                                 active={pathName === '/'}>
                                 Download CV in PDF
@@ -50,11 +51,13 @@ const Navbar = () => {
 
                     {/* Settings Dropdown */}
                     <div className="hidden sm:flex sm:items-center sm:ml-6">
+                        <ThemeSwitcher />
+
                         <Dropdown
                             align="right"
                             width="48"
                             trigger={
-                                <button className="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none transition duration-150 ease-in-out">
+                                <button className="flex items-center text-sm font-medium text-gray-500 dark:text-white hover:text-gray-700 focus:outline-none transition duration-150 ease-in-out">
                                     <div>Curriculum Vitae</div>
 
                                     <div className="ml-1">
@@ -77,7 +80,7 @@ const Navbar = () => {
                             <DropdownLink href="#contact">
                                 <Image
                                     src={envelope}
-                                    alt='envelope'
+                                    alt='envelope-icon'
                                 />
                             </DropdownLink>
                         </Dropdown>
@@ -85,9 +88,11 @@ const Navbar = () => {
 
                     {/* Hamburger */}
                     <div className="-mr-2 flex items-center sm:hidden">
+                        <ThemeSwitcher />
+
                         <button
                             onClick={() => setOpen(open => !open)}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                            className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-white hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                             <svg
                                 className="h-6 w-6"
                                 stroke="currentColor"
@@ -121,7 +126,7 @@ const Navbar = () => {
                 <div className="block sm:hidden">
                     <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
-                            className="link-color"
+                            className="text-[#b61d1d] dark:text-[#009ECA]"
                             href={pdfCV}
                             active={pathName === '/'}>
                             Download CV in PDF
@@ -145,7 +150,7 @@ const Navbar = () => {
                             href="#contact"
                             active={pathName === '/#contact'}>
                             <Image
-                                src='envelope'
+                                src={envelope}
                                 alt='envelope-icon'
                             />
                         </ResponsiveNavLink>

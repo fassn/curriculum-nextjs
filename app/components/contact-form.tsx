@@ -52,26 +52,26 @@ const ContactForm = () => {
 
             <form onSubmit={handleSubmit} id='contact_form' className="max-w-lg">
                 {/* Email Address */}
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className='dark:text-white'>Email</Label>
 
                 <Input
                     id="email"
                     type="email"
                     value={email}
-                    className="block mt-1 w-full"
+                    className="block mt-1 w-full dark:bg-gray-200"
                     onChange={event => setEmail(event.target.value)}
                     required
                 />
 
                 {/* Title */}
                 <div className="mt-4">
-                    <Label htmlFor="title">Title</Label>
+                    <Label htmlFor="title" className='dark:text-white'>Title</Label>
 
                     <Input
                         id="title"
                         type="text"
                         value={title}
-                        className="block mt-1 w-full"
+                        className="block mt-1 w-full dark:bg-gray-200"
                         onChange={event => setTitle(event.target.value)}
                         required
                         autoComplete="current-title"
@@ -80,12 +80,12 @@ const ContactForm = () => {
 
                 {/* Message */}
                 <div className="mt-4">
-                    <Label htmlFor="message">Message</Label>
+                    <Label htmlFor="message" className='dark:text-white'>Message</Label>
                     <Textarea
                         id="message"
                         type="text"
                         value={message}
-                        className="block mt-1 w-full"
+                        className="block mt-1 w-full dark:bg-gray-200"
                         onChange={event => setMessage(event.target.value)}
                         required
                     />
@@ -94,7 +94,7 @@ const ContactForm = () => {
                 <div className="flex items-center justify-end mt-4">
                     <button
                         type='submit'
-                        className={`w-full items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150`}
+                        className={`w-full items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150`}
                     >
                         Send Message
                     </button>

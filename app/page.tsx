@@ -7,8 +7,6 @@ import WrappedContactForm from './components/contact-form'
 export default function Home() {
   return (
     <>
-      <Navbar />
-
       <AboutMe />
 
       <Curriculum />

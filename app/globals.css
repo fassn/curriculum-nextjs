@@ -4,9 +4,6 @@
 
 /* My Own Tailwind Utilities */
 @layer utilities {
-    .link-color {
-        color: #b61d1d;
-    }
 }
 
 /* Global element styles */
