@@ -23,7 +23,7 @@ const ContactForm = () => {
     const [message, setMessage] = useState('')
     const [errors, setErrors] = useState([])
 
-    const handleSubmit = async event => {
+    const handleSubmit = async (event) => {
         event.preventDefault()
         setErrors([])
 
@@ -91,6 +91,7 @@ const ContactForm = () => {
                     />
                 </div>
 
+                {/* Submit */}
                 <div className="flex items-center justify-end mt-4">
                     <button
                         type='submit'
