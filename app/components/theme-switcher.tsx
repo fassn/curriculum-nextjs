@@ -17,6 +17,7 @@ const ThemeSwitcher = () => {
         if(currentTheme ==="dark") {
             return (
                 <Image
+                    className="mr-5"
                     src={lightmode}
                     alt='light mode icon'
                     width='24'
@@ -29,6 +30,7 @@ const ThemeSwitcher = () => {
         } else {
             return (
                 <Image
+                    className="mr-5"
                     src={darkmode}
                     alt='dark mode icon'
                     width='24'
