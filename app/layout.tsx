@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from './components/navbar'
-import Provider from './components/theme-provider'
+import ThemeSwitcherProvider from './components/theme-provider'
+import { AuthContextProvider } from './context/auth-context'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,13 +19,15 @@ export default function RootLayout({
 }) {
     return (
     <html lang="en">
-        <body className={inter.className + ' dark:bg-[#23272f]'}>
-            <Provider>
-                <Navbar />
-                <main>
-                    {children}
-                </main>
-            </Provider>
+        <body className={inter.className + ' dark:bg-charcoal'}>
+            <AuthContextProvider>
+                <ThemeSwitcherProvider>
+                    <Navbar />
+                    <main>
+                        {children}
+                    </main>
+                </ThemeSwitcherProvider>
+            </AuthContextProvider>
         </body>
     </html>
     )

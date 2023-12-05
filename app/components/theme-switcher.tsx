@@ -8,7 +8,11 @@ import darkmode from '/public/dark-mode-icon.png'
 import lightmode from '/public/light-mode-icon.png'
 import Image from "next/image";
 
-const ThemeSwitcher = () => {
+type themeSwitcherProps = {
+    className?: string
+}
+
+const ThemeSwitcher = ({ className = '' }: themeSwitcherProps) => {
     const {systemTheme, theme, setTheme } = useTheme()
 
     const renderThemeChanger= () => {
@@ -19,6 +23,7 @@ const ThemeSwitcher = () => {
                 <Image
                     src={lightmode}
                     alt='light mode icon'
+                    className={className}
                     width='24'
                     height='24'
                     style={{ filter: 'invert(1)' }}
@@ -31,6 +36,7 @@ const ThemeSwitcher = () => {
                 <Image
                     src={darkmode}
                     alt='dark mode icon'
+                    className={className}
                     width='24'
                     height='24'
                     role="button"

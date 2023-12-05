@@ -58,8 +58,9 @@ const ContactForm = () => {
                     id="email"
                     type="email"
                     value={email}
-                    className="block mt-1 w-full dark:bg-gray-200"
+                    className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
                     onChange={event => setEmail(event.target.value)}
+                    tabindex={1}
                     required
                 />
 
@@ -71,8 +72,9 @@ const ContactForm = () => {
                         id="title"
                         type="text"
                         value={title}
-                        className="block mt-1 w-full dark:bg-gray-200"
+                        className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal "
                         onChange={event => setTitle(event.target.value)}
+                        tabindex={1}
                         required
                         autoComplete="current-title"
                     />
@@ -85,8 +87,9 @@ const ContactForm = () => {
                         id="message"
                         type="text"
                         value={message}
-                        className="block mt-1 w-full dark:bg-gray-200"
+                        className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal "
                         onChange={event => setMessage(event.target.value)}
+                        tabindex={1}
                         required
                     />
                 </div>
@@ -95,7 +98,8 @@ const ContactForm = () => {
                 <div className="flex items-center justify-end mt-4">
                     <button
                         type='submit'
-                        className={`w-full items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150`}
+                        className={`w-full items-center px-4 py-2 bg-gray-800 dark:bg-gray-200  border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150`}
+                        tabIndex={1}
                     >
                         Send Message
                     </button>

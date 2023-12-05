@@ -4,13 +4,15 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import Dropdown from './dropdown'
-import DropdownLink from './dropdown-link'
+import { DropdownLink } from './dropdown-link'
 import NavLink from './navlink'
 import ResponsiveNavLink from './responsive-navlink'
 
 import envelope from '/public/envelope.png'
 import Image from 'next/image'
 import ThemeSwitcher from './theme-switcher'
+import { useAuthContext } from '../context/auth-context'
+import { getAuth, signOut } from 'firebase/auth'
 
 const Navbar = () => {
     const pathName = usePathname()
@@ -19,6 +21,12 @@ const Navbar = () => {
         'https://drive.google.com/file/d/1igv7jM2cfg4mRkJoLbW9PpReLOIoXZ5s/view?usp=sharing'
 
     const [open, setOpen] = useState(false)
+
+    const { user } = useAuthContext()
+
+    const handleSignOut = () => {
+        signOut(getAuth())
+    }
 
     return (
         <nav className="fixed top-0 right-0 left-0 mb-40 z-50 bg-white dark:bg-gray-700 border-b border-gray-100 dark:border-none">
@@ -48,18 +56,24 @@ const Navbar = () => {
                                 Blog
                             </NavLink>
                         </div>
-                        {/* <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        { user ?
+                        <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                             <NavLink
-                                href="/dashboard"
-                                active={pathName === '/dashboard'}>
-                                Dashboard
+                                href="/admin"
+                                active={pathName === '/admin'}>
+                                Admin
                             </NavLink>
-                        </div> */}
+                        </div>
+                        : <></>}
                     </div>
 
                     {/* Settings Dropdown */}
                     <div className="hidden sm:flex sm:items-center sm:ml-6">
-                        <ThemeSwitcher />
+
+                        { /* Sign Out button */ }
+                        { user ? <button onClick={handleSignOut} className='text-amber-500'>Logout</button> : <></> }
+
+                        <ThemeSwitcher className='ml-5' />
 
                         { pathName === '/' && // hide dropdown if not on '/' CV page
                             <Dropdown
@@ -98,7 +112,11 @@ const Navbar = () => {
 
                     {/* Hamburger */}
                     <div className="-mr-2 flex items-center sm:hidden">
-                        <ThemeSwitcher />
+
+                        { /* Sign Out button */ }
+                        { user ? <button onClick={handleSignOut} className='text-amber-500'>Logout</button> : <></> }
+
+                        <ThemeSwitcher className='ml-5'/>
 
                         { pathName === '/' && // hide hamburger menu if not on '/' CV page
                             <button

@@ -4,18 +4,31 @@ import { useState } from "react"
 import Input from "../components/input"
 import Label from "../components/label"
 
-export default function Login() {
+import signUp from "../firebase/auth/signup"
+import { useRouter } from 'next/navigation'
 
+export default function Signup() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const router = useRouter()
 
     const handleSubmit = async (event) => {
-        // TODO
-    }
+        event.preventDefault()
 
+        const { result, error } = await signUp(email, password);
+
+        if (error) {
+            return console.log(error)
+        }
+
+        return router.push("/admin")
+    }
     return (
-        <form onSubmit={handleSubmit} id='login_form' className="flex justify-center">
-            <div className="w-full max-w-md">
+
+        /* This page is temporarily redirected to root in middleware.ts ! */
+
+        <div className="flex min-h-[80vh]">
+            <form onSubmit={handleSubmit} id='login_form' className="w-full max-w-lg m-auto">
                 {/* Email Address */}
                 <Label htmlFor="email" className='dark:text-white'>Email</Label>
 
@@ -23,8 +36,9 @@ export default function Login() {
                     id="email"
                     type="email"
                     value={email}
-                    className="block mt-1 w-full dark:bg-gray-200"
+                    className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
                     onChange={event => setEmail(event.target.value)}
+                    tabindex={1}
                     required
                 />
 
@@ -36,8 +50,9 @@ export default function Login() {
                         id="password"
                         type="text"
                         value={password}
-                        className="block mt-1 w-full dark:bg-gray-200"
+                        className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
                         onChange={event => setPassword(event.target.value)}
+                        tabindex={1}
                         required
                         autoComplete="current-title"
                     />
@@ -48,11 +63,12 @@ export default function Login() {
                     <button
                         type='submit'
                         className={`w-full items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150`}
+                        tabIndex={1}
                     >
-                        Login
+                        Sign Up
                     </button>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     )
 }
