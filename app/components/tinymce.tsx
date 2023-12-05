@@ -1,19 +1,29 @@
 import { Editor } from '@tinymce/tinymce-react'
+import addPost from '../firebase/firestore/add-post';
+import ValidationErrors from './validation-errors';
 import { useRef, useState } from 'react';
 
 export default function TinyMCE() {
     const editorRef = useRef(null);
     const [dirty, setDirty] = useState(false)
+    const [errors, setErrors] = useState([])
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (editorRef.current) {
-            const content = editorRef.current.getContent()
+            setErrors([])
+            const content = editorRef.current.getContent({ format: 'text' })
             console.log({content});
             setDirty(false)
             editorRef.current.setDirty(false)
 
             // push to DB here
-            // TODO
+            const res = await addPost(content)
+
+            if (res) {
+                console.log({res});
+                setErrors([res])
+                return
+            }
         }
     }
 
@@ -45,6 +55,8 @@ export default function TinyMCE() {
                         disabled={!dirty}
                     >Save Post</button>
                     { dirty && <p className='text-white text-center'>You have unsaved content!</p> }
+                    {/* Validation Errors */}
+                    <ValidationErrors className="mb-4" errors={errors} />
                 </div>
             </div>
         </div>

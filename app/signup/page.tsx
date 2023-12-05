@@ -38,7 +38,7 @@ export default function Signup() {
                     value={email}
                     className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
                     onChange={event => setEmail(event.target.value)}
-                    tabindex={1}
+                    tabIndex={1}
                     required
                 />
 
@@ -52,7 +52,7 @@ export default function Signup() {
                         value={password}
                         className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
                         onChange={event => setPassword(event.target.value)}
-                        tabindex={1}
+                        tabIndex={1}
                         required
                         autoComplete="current-title"
                     />

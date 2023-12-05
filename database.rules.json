@@ -1,11 +1,18 @@
 {
   "rules": {
-    ".read": "auth == null",
-    ".write": "auth == null",
     "messages": {
+      ".read": "true",
+      ".write": "true",
       ".indexOn": ["timestamp"],
       "$messageId": {
         ".validate": "newData.hasChildren(['email', 'title', 'message', 'timestamp'])"
+      }
+    },
+    "posts": {
+      ".read": "auth.provider == 'password'",
+      ".write": "auth.provider == 'password'",
+      "$timestamp": {
+        ".validate": "newData.hasChildren(['post'])"
       }
     }
   }

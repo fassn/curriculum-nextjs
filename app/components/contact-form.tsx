@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-// import axios from '../../lib/axios'
 import Input from './input'
 import Label from './label'
 import GoogleReCaptchaWrapper from './google-recaptcha-wrapper'
@@ -60,7 +59,7 @@ const ContactForm = () => {
                     value={email}
                     className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
                     onChange={event => setEmail(event.target.value)}
-                    tabindex={1}
+                    tabIndex={1}
                     required
                 />
 
@@ -74,7 +73,7 @@ const ContactForm = () => {
                         value={title}
                         className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal "
                         onChange={event => setTitle(event.target.value)}
-                        tabindex={1}
+                        tabIndex={1}
                         required
                         autoComplete="current-title"
                     />
@@ -89,7 +88,7 @@ const ContactForm = () => {
                         value={message}
                         className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal "
                         onChange={event => setMessage(event.target.value)}
-                        tabindex={1}
+                        tabIndex={1}
                         required
                     />
                 </div>
