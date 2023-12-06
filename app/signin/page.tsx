@@ -47,7 +47,7 @@ export default function Signin() {
 
                     <Input
                         id="password"
-                        type="text"
+                        type="password"
                         value={password}
                         className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
                         onChange={event => setPassword(event.target.value)}

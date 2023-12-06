@@ -1,7 +1,7 @@
 import firebaseApp from "../config"
 import { getDatabase, ref, set } from "firebase/database"
 import { now } from "moment";
-import { randomBytes } from "crypto";
+import { getRandomUUID } from "./utils";
 
 export default async function addMessage(email, title, message) {
     const db = getDatabase(firebaseApp)
@@ -18,11 +18,4 @@ export default async function addMessage(email, title, message) {
             return 'Message was not sent. Please verify that the email is correct and the fields are filled.'
         }
     })
-}
-
-function getRandomUUID(){
-    if (typeof window === "undefined"){
-        return randomBytes(16).toString('hex')
-    }
-    return crypto.randomUUID();
 }

@@ -12,7 +12,7 @@
       ".read": "auth.provider == 'password'",
       ".write": "auth.provider == 'password'",
       "$timestamp": {
-        ".validate": "newData.hasChildren(['post'])"
+        ".validate": "newData.hasChildren(['content', 'date'])"
       }
     }
   }

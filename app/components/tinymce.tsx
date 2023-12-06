@@ -12,7 +12,6 @@ export default function TinyMCE() {
         if (editorRef.current) {
             setErrors([])
             const content = editorRef.current.getContent({ format: 'text' })
-            console.log({content});
             setDirty(false)
             editorRef.current.setDirty(false)
 
