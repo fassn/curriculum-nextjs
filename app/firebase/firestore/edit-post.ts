@@ -1,23 +1,17 @@
+import { Post } from "@/app/types/post"
 import firebaseApp from "../config"
 import { getDatabase, ref, set } from "firebase/database"
-import moment from "moment";
-import { getRandomUUID } from "./utils";
-import { setMomentFrenchLocale } from "@/app/utils";
 
-type AddPostResponse = {
+type EditPostResponse = {
     id?: string,
     error?: string
 }
 
-export default async function addPost(content): Promise<AddPostResponse> {
+export default async function editPost(id, post: Post): Promise<EditPostResponse> {
     const db = getDatabase(firebaseApp)
-    const id = getRandomUUID()
-    setMomentFrenchLocale()
-    const date = moment().locale('fr').format('LL')
-
     return set(ref(db, 'posts/' + id), {
-        content,
-        date
+        content: post.content,
+        date: post.date
     })
     .then(() => { return { id }})
     .catch(e => {

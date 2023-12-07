@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { useAuthContext } from "../context/auth-context"
 import { useRouter } from "next/navigation"
-import TinyMCE from "../components/tinymce"
 import getPosts from "../firebase/firestore/get-posts"
 import Link from "next/link"
 
@@ -32,7 +31,7 @@ export default function Admin() {
                     className='w-1/2 items-center bg-gray-800 dark:bg-gray-200  border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150'>
                     <Link
                         className="block px-4 py-2"
-                        href='/admin/new-post'>
+                        href='/admin/post/new'>
                         New Post
                     </Link>
                 </button>
@@ -45,7 +44,7 @@ export default function Admin() {
                         className="flex justify-between w-full p-4 my-2 dark:bg-gray-700 rounded"
                         key={post[0]}>
                         {post[1].content}
-                        <Link href={'/admin/edit-post/' + post[0]}>
+                        <Link href={'/admin/post/edit/' + post[0]}>
                             <svg
                                 width="25px"
                                 height="25px"

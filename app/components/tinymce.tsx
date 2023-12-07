@@ -1,12 +1,18 @@
+'use client'
+
 import { Editor } from '@tinymce/tinymce-react'
 import addPost from '../firebase/firestore/add-post';
 import ValidationErrors from './validation-errors';
 import { useRef, useState } from 'react';
+import editPost from '../firebase/firestore/edit-post';
+import { Post } from '../types/post';
+import { useRouter } from 'next/navigation';
 
-export default function TinyMCE() {
+export default function TinyMCE({ postId, post }: { postId?: string, post?: Post }) {
     const editorRef = useRef(null);
     const [dirty, setDirty] = useState(false)
     const [errors, setErrors] = useState([])
+    const route = useRouter()
 
     const handleSave = async () => {
         if (editorRef.current) {
@@ -15,13 +21,28 @@ export default function TinyMCE() {
             setDirty(false)
             editorRef.current.setDirty(false)
 
-            // push to DB here
-            const res = await addPost(content)
+            // New post
+            if (!postId) {
+                const res = await addPost(content)
+                if (res?.id) {
+                    route.push('/admin/post/edit/' + res.id)
+                }
+                if (res?.error) {
+                    console.log({res});
+                    setErrors([res])
+                    return
+                }
+            }
 
-            if (res) {
-                console.log({res});
-                setErrors([res])
-                return
+            // Edit post
+            if (postId) {
+                post.content = content
+                const res = await editPost(postId, post)
+                if (res?.error) {
+                    console.log({res});
+                    setErrors([res])
+                    return
+                }
             }
         }
     }
@@ -31,6 +52,7 @@ export default function TinyMCE() {
             <div className='flex-col'>
                 <Editor
                     onInit={(evt, editor) => editorRef.current = editor}
+                    initialValue={post?.content}
                     onDirty={() => setDirty(true)}
                     apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
                     init={{
