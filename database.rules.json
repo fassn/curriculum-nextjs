@@ -9,7 +9,7 @@
       }
     },
     "posts": {
-      ".read": "auth.provider == 'password'",
+      ".read": "true",
       ".write": "auth.provider == 'password'",
       "$timestamp": {
         ".validate": "newData.hasChildren(['content', 'date'])"
