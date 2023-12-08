@@ -20,7 +20,7 @@ const ILove = () => {
                     </div>
                     <div>
                         <a
-                            className="text-[#b61d1d] dark:text-[#009ECA]"
+                            className="text-dark-red dark:text-deep-blue"
                             href="https://www.theoceancleanup.com/">
                             Ocean Cleanup Project
                         </a>
@@ -38,7 +38,7 @@ const ILove = () => {
                     </div>
                     <div>
                         <a
-                            className="text-[#b61d1d] dark:text-[#009ECA]"
+                            className="text-dark-red dark:text-deep-blue"
                             href="https://www.bayesimpact.org/">
                             Bayes Impact
                         </a>

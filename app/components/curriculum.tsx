@@ -14,6 +14,11 @@ const Curriculum = () => {
                     Full-Stack developer – One Heart Communication
                     <br />
                     <br />
+                    <b>2018 - 2019</b>
+                    <br />
+                    Back to school @ <a className="text-deep-blue" href="https://42.fr">42 Paris</a>
+                    <br />
+                    <br />
                     <b>2014 - 2017</b>
                     <br />
                     Head of Online Marketing – Medigo GmbH
@@ -38,11 +43,13 @@ const Curriculum = () => {
                 <div className="flex-1 max-w-xl ml-2">
                     <b>Dev</b>
                     <br />
+                    NextJS (React)
+                    <br />
                     Laravel
                     <br />
                     Angular
                     <br />
-                    MySQL
+                    MySQL/PostGreSQL
                     <br />
                     <br />
                     <b>SEO</b>

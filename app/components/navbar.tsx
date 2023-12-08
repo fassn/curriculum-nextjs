@@ -42,7 +42,7 @@ const Navbar = () => {
                         {/* Navigation Links */}
                         <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                             <NavLink
-                                className="text-[#b61d1d] dark:text-[#009ECA]"
+                                className="text-dark-red dark:text-deep-blue"
                                 href={pdfCV}
                                 target='_blank'
                                 active={pathName === '/'}>
@@ -156,7 +156,7 @@ const Navbar = () => {
                 <div className="block sm:hidden">
                     <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
-                            className="text-[#b61d1d] dark:text-[#009ECA]"
+                            className="text-dark-red dark:text-deep-blue"
                             href={pdfCV}
                             active={pathName === '/'}>
                             Download CV in PDF

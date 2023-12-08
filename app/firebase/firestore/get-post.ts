@@ -1,7 +1,8 @@
+import { Post } from "@/app/types/post"
 import firebaseApp from "../config"
 import { child, get, getDatabase, ref } from "firebase/database"
 
-export default async function getPost(postId: string) {
+export default async function getPost(postId: string): Promise<Post> {
     const db = getDatabase(firebaseApp)
 
     return get(child(ref(db), `posts/${postId}`)).then(snapshot => {
@@ -9,7 +10,5 @@ export default async function getPost(postId: string) {
             return snapshot.val()
         }
         return []
-    }).catch(e => {
-        console.log(e)
     })
 }
