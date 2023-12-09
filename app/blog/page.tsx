@@ -23,8 +23,7 @@ export default function Blog() {
                                 { post[1].date }
                                 <hr className="mt-2"></hr>
                             </div>
-                            <div>
-                                { post[1].content }
+                            <div dangerouslySetInnerHTML={{ __html: post[1].content }}>
                             </div>
                     </li>
                 )) }

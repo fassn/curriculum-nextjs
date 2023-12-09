@@ -17,7 +17,7 @@ export default function TinyMCE({ postId, post }: { postId?: string, post?: Post
     const handleSave = async () => {
         if (editorRef.current) {
             setErrors([])
-            const content = editorRef.current.getContent({ format: 'text' })
+            const content = editorRef.current.getContent()
             setDirty(false)
             editorRef.current.setDirty(false)
 
@@ -59,6 +59,8 @@ export default function TinyMCE({ postId, post }: { postId?: string, post?: Post
                         height: '80vh',
                         content_css: 'dark',
                         auto_focus: true,
+                        entity_encoding: 'raw',
+                        pad_empty_with_br: true,
                         plugins: 'tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss',
                         toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
                         tinycomments_mode: 'embedded',
