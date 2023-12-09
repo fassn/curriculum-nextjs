@@ -1,4 +1,4 @@
-import TinyMCE from "@/app/components/tinymce";
+import TinyMCE from "@/app/components/TinyMCE";
 
 export default function NewPost() {
     return (

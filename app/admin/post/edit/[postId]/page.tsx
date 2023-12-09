@@ -1,6 +1,6 @@
 'use client'
 
-import TinyMCE from "@/app/components/tinymce"
+import TinyMCE from "@/app/components/TinyMCE"
 import getPost from "@/app/firebase/firestore/get-post"
 import { Post } from "@/app/types/post"
 import { useEffect, useState } from "react"
