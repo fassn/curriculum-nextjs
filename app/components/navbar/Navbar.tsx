@@ -3,15 +3,15 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import Dropdown from './dropdown'
-import { DropdownLink } from './dropdown-link'
-import NavLink from './navlink'
-import ResponsiveNavLink from './responsive-navlink'
+import Dropdown from './DropDown'
+import { DropdownLink } from './DropdownLink'
+import NavLink from './NavLink'
+import ResponsiveNavLink from './ResponsiveNavLink'
 
 import envelope from '/public/envelope.png'
 import Image from 'next/image'
-import ThemeSwitcher from './theme-switcher'
-import { useAuthContext } from '../context/auth-context'
+import ThemeSwitcher from '../dark-theme/ThemeSwitcher'
+import { useAuthContext } from '../../context/auth-context'
 import { getAuth, signOut } from 'firebase/auth'
 
 const Navbar = () => {
@@ -98,12 +98,14 @@ const Navbar = () => {
                                     </button>
                                 }>
                                 <DropdownLink href="#about">About</DropdownLink>
-                                <DropdownLink href="#cv">CV</DropdownLink>
+                                <DropdownLink href="#projects">Projects</DropdownLink>
+                                <DropdownLink href="#experiences">Experiences</DropdownLink>
                                 <DropdownLink href="#ilove">I ♥</DropdownLink>
                                 <DropdownLink href="#contact">
                                     <Image
                                         src={envelope}
                                         alt='envelope-icon'
+                                        priority
                                     />
                                 </DropdownLink>
                             </Dropdown>
@@ -167,9 +169,14 @@ const Navbar = () => {
                             About
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
-                            href="#cv"
-                            active={pathName === '#cv'}>
-                            CV
+                            href="#projects"
+                            active={pathName === '#projects'}>
+                            Projects
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href="#experiences"
+                            active={pathName === '#experiences'}>
+                            Experiences
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             href="#ilove"

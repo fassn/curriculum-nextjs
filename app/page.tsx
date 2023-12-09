@@ -1,8 +1,8 @@
-import AboutMe from './components/about-me'
-import Curriculum from './components/curriculum'
-import ILove from './components/i-love'
-import WrappedContactForm from './components/contact-form'
-import Projects from './components/projets'
+import AboutMe from './components/curriculum/AboutMe'
+import Experiences from './components/curriculum/Experiences'
+import ILove from './components/curriculum/ILove'
+import WrappedContactForm from './components/curriculum/ContactForm'
+import Projects from './components/curriculum/Projects'
 
 export default function Home() {
   return (
@@ -11,7 +11,7 @@ export default function Home() {
 
       <Projects />
 
-      <Curriculum />
+      <Experiences />
 
       <ILove />
 

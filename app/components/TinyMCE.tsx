@@ -2,7 +2,7 @@
 
 import { Editor } from '@tinymce/tinymce-react'
 import addPost from '../firebase/firestore/add-post';
-import ValidationErrors from './validation-errors';
+import ValidationErrors from './form/ValidationErrors';
 import { useRef, useState } from 'react';
 import editPost from '../firebase/firestore/edit-post';
 import { Post } from '../types/post';

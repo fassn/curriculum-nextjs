@@ -1,10 +1,10 @@
-const Curriculum = () => {
+const Experiences = () => {
     return (
         <div
-            id="cv"
+            id="experiences"
             className="max-w-6xl py-4 px-6 lg:px-8 sm:mx-4 sm:my-4 xl:mx-auto">
             <div>
-                <h2>cv</h2>
+                <h2>experiences</h2>
                 <hr className="my-4" />
             </div>
             <div className="flex">
@@ -75,4 +75,4 @@ const Curriculum = () => {
     )
 }
 
-export default Curriculum
+export default Experiences

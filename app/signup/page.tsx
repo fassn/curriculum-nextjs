@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from "react"
-import Input from "../components/input"
-import Label from "../components/label"
+import Input from "../components/form/Input"
+import Label from "../components/form/Label"
 
 import signUp from "../firebase/auth/signup"
 import { useRouter } from 'next/navigation'

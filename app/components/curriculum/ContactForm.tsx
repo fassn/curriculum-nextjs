@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import Input from './input'
-import Label from './label'
-import GoogleReCaptchaWrapper from './google-recaptcha-wrapper'
-import Textarea from './textarea'
-import addMessage from '../firebase/firestore/add-message'
-import ValidationErrors from './validation-errors'
+import Input from '../form/Input'
+import Label from '../form/Label'
+import GoogleReCaptchaWrapper from '../form/GoogleReCaptchaWrapper'
+import Textarea from '../form/Textarea'
+import addMessage from '../../firebase/firestore/add-message'
+import ValidationErrors from '../form/ValidationErrors'
 
 export default function WrappedContactForm() {
     return (
