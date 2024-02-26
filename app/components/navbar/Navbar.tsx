@@ -185,7 +185,7 @@ const Navbar = () => {
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             href="#contact"
-                            active={pathName === '/#contact'}>
+                            active={pathName === '#contact'}>
                             <Image
                                 src={envelope}
                                 alt='envelope-icon'

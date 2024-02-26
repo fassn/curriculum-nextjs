@@ -3,7 +3,7 @@ import { getDatabase, ref, set } from "firebase/database"
 import { now } from "moment";
 import { getRandomUUID } from "./utils";
 
-export default async function addMessage(email, title, message) {
+export default async function addMessage(email: string, title: string, message: string) {
     const db = getDatabase(firebaseApp)
     const id = getRandomUUID()
     const timestamp = now()

@@ -16,7 +16,7 @@ export default async function getPosts(): Promise<[key: string, Post][]> {
         posts.sort((a, b) => {
             if (a[1].date > b[1].date) return -1
             if (a[1].date < b[1].date) return 1
-            if (a[1].date == b[1].date) return 0
+            return 0
         })
         return posts
     }

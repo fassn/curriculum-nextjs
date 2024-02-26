@@ -9,7 +9,7 @@ type AddPostResponse = {
     error?: string
 }
 
-export default async function addPost(content): Promise<AddPostResponse> {
+export default async function addPost(content: string): Promise<AddPostResponse|undefined> {
     const db = getDatabase(firebaseApp)
     const id = getRandomUUID()
     setMomentFrenchLocale()

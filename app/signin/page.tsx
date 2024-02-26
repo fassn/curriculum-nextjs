@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react"
+import { ChangeEvent, FormEvent, useState } from "react"
 import Input from "../components/form/Input"
 import Label from "../components/form/Label"
 
@@ -12,7 +12,7 @@ export default function Signin() {
     const [password, setPassword] = useState('')
     const router = useRouter()
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
         const { result, error } = await signIn(email, password);
@@ -35,7 +35,7 @@ export default function Signin() {
                     type="email"
                     value={email}
                     className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
-                    onChange={event => setEmail(event.target.value)}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
                     autoFocus={true}
                     tabIndex={1}
                     required
@@ -50,7 +50,7 @@ export default function Signin() {
                         type="password"
                         value={password}
                         className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
-                        onChange={event => setPassword(event.target.value)}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
                         tabIndex={1}
                         required
                         autoComplete="current-title"

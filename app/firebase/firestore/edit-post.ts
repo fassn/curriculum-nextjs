@@ -7,7 +7,7 @@ type EditPostResponse = {
     error?: string
 }
 
-export default async function editPost(id, post: Post): Promise<EditPostResponse> {
+export default async function editPost(id: string, post: Post): Promise<EditPostResponse|undefined> {
     const db = getDatabase(firebaseApp)
     return set(ref(db, 'posts/' + id), {
         content: post.content,
