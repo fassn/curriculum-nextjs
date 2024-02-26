@@ -4,7 +4,7 @@ import moment from "moment";
 import { getRandomUUID } from "./utils";
 import { setMomentFrenchLocale } from "@/app/utils";
 
-type AddPostResponse = {
+export type AddPostResponse = {
     id?: string,
     error?: string
 }

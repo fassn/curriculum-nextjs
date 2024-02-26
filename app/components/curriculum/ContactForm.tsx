@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
 import Input from '../form/Input'
 import Label from '../form/Label'
 import GoogleReCaptchaWrapper from '../form/GoogleReCaptchaWrapper'
@@ -20,15 +20,15 @@ const ContactForm = () => {
     const [email, setEmail] = useState('')
     const [title, setTitle] = useState('')
     const [message, setMessage] = useState('')
-    const [errors, setErrors] = useState([])
+    const [errors, setErrors] = useState<string[]>([])
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: FormEvent) => {
         event.preventDefault()
         setErrors([])
 
         const res = await addMessage(email, title, message)
-        if (res) {
-            setErrors([res])
+        if (res?.error) {
+            setErrors([res.error])
             return
         }
 
@@ -58,7 +58,7 @@ const ContactForm = () => {
                     type="email"
                     value={email}
                     className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
-                    onChange={event => setEmail(event.target.value)}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
                     tabIndex={1}
                     required
                 />
@@ -72,7 +72,7 @@ const ContactForm = () => {
                         type="text"
                         value={title}
                         className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal "
-                        onChange={event => setTitle(event.target.value)}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => setTitle(event.target.value)}
                         tabIndex={1}
                         required
                         autoComplete="current-title"
@@ -87,7 +87,7 @@ const ContactForm = () => {
                         type="text"
                         value={message}
                         className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal "
-                        onChange={event => setMessage(event.target.value)}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => setMessage(event.target.value)}
                         tabIndex={1}
                         required
                     />

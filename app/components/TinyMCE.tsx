@@ -1,7 +1,8 @@
 'use client'
 
 import { Editor } from '@tinymce/tinymce-react'
-import addPost from '../firebase/firestore/add-post';
+import { Editor as TinyMCEEditor } from 'tinymce';
+import addPost, { AddPostResponse } from '../firebase/firestore/add-post';
 import ValidationErrors from './form/ValidationErrors';
 import { useRef, useState } from 'react';
 import editPost from '../firebase/firestore/edit-post';
@@ -9,9 +10,9 @@ import { Post } from '../types/post';
 import { useRouter } from 'next/navigation';
 
 export default function TinyMCE({ postId, post }: { postId?: string, post?: Post }) {
-    const editorRef = useRef(null);
+    const editorRef = useRef<TinyMCEEditor|null>(null);
     const [dirty, setDirty] = useState(false)
-    const [errors, setErrors] = useState([])
+    const [errors, setErrors] = useState<string[]>([])
     const route = useRouter()
 
     const handleSave = async () => {
@@ -29,18 +30,18 @@ export default function TinyMCE({ postId, post }: { postId?: string, post?: Post
                 }
                 if (res?.error) {
                     console.log({res});
-                    setErrors([res])
+                    setErrors([res.error])
                     return
                 }
             }
 
             // Edit post
-            if (postId) {
+            if (postId && post) {
                 post.content = content
                 const res = await editPost(postId, post)
                 if (res?.error) {
                     console.log({res});
-                    setErrors([res])
+                    setErrors([res.error])
                     return
                 }
             }
@@ -51,7 +52,7 @@ export default function TinyMCE({ postId, post }: { postId?: string, post?: Post
         <div className='flex w-full lg:w-1/2 m-auto justify-center'>
             <div className='flex-col'>
                 <Editor
-                    onInit={(evt, editor) => editorRef.current = editor}
+                    onInit={(_, editor) => editorRef.current = editor}
                     initialValue={post?.content}
                     onDirty={() => setDirty(true)}
                     apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}

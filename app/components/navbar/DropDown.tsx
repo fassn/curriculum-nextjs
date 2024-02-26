@@ -16,7 +16,7 @@ const Dropdown = ({
     trigger,
     children,
 }: dropdownProps) => {
-    let alignmentClasses
+    let alignmentClasses = ''
 
     switch (width) {
         case '48':

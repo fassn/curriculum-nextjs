@@ -1,4 +1,4 @@
-const Input = ({ disabled = false, autoFocus = false, className, ...props }) => (
+const Input = ({ disabled = false, autoFocus = false, className = '', ...props }) => (
     <input
         disabled={disabled}
         autoFocus={autoFocus}

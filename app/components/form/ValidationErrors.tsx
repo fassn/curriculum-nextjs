@@ -1,4 +1,9 @@
-const ValidationErrors = ({ errors = [], ...props }) => (
+type ValidationErrorsProps = {
+    className?: string
+    errors?: string[]
+}
+
+const ValidationErrors = ({ errors = [], ...props }: ValidationErrorsProps) => (
     <>
         {errors.length > 0 && (
             <div {...props}>

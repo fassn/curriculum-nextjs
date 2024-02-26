@@ -1,4 +1,4 @@
-const Textarea = ({ disabled = false, rows = 3, className, ...props }) => (
+const Textarea = ({ disabled = false, rows = 3, className = '', ...props }) => (
     <textarea
         disabled={disabled}
         rows={rows}
