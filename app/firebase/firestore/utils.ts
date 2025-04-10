@@ -1,8 +1,8 @@
-import { randomBytes } from "crypto";
+import { randomBytes, randomUUID } from "crypto";
 
 export function getRandomUUID(){
     if (typeof window === "undefined"){
         return randomBytes(16).toString('hex')
     }
-    return crypto.randomUUID();
+    return randomUUID();
 }
