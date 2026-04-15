@@ -8,7 +8,7 @@ import { DropdownLink } from './DropdownLink'
 import NavLink from './NavLink'
 import ResponsiveNavLink from './ResponsiveNavLink'
 
-import envelope from '/public/envelope.png'
+import envelope from '@/public/envelope.png'
 import Image from 'next/image'
 import ThemeSwitcher from '../dark-theme/ThemeSwitcher'
 import { useAuthContext } from '../../context/auth-context'

@@ -18,16 +18,16 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
         <body className={inter.className + ' dark:bg-charcoal'}>
-            <AuthContextProvider>
-                <ThemeSwitcherProvider>
+            <ThemeSwitcherProvider>
+                <AuthContextProvider>
                     <Navbar />
                     <main>
                         {children}
                     </main>
-                </ThemeSwitcherProvider>
-            </AuthContextProvider>
+                </AuthContextProvider>
+            </ThemeSwitcherProvider>
         </body>
     </html>
     )

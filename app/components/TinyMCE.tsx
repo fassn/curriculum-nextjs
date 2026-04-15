@@ -2,7 +2,7 @@
 
 import { Editor } from '@tinymce/tinymce-react'
 import { Editor as TinyMCEEditor } from 'tinymce';
-import addPost, { AddPostResponse } from '../firebase/firestore/add-post';
+import addPost from '../firebase/firestore/add-post';
 import ValidationErrors from './form/ValidationErrors';
 import { useRef, useState } from 'react';
 import editPost from '../firebase/firestore/edit-post';
@@ -37,8 +37,8 @@ export default function TinyMCE({ postId, post }: { postId?: string, post?: Post
 
             // Edit post
             if (postId && post) {
-                post.content = content
-                const res = await editPost(postId, post)
+                const updatedPost = { ...post, content }
+                const res = await editPost(postId, updatedPost)
                 if (res?.error) {
                     console.log({res});
                     setErrors([res.error])

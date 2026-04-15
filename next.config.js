@@ -6,6 +6,7 @@ const serverActionsAllowedOrigins = (process.env.SERVER_ACTIONS_ALLOWED_ORIGINS 
 
 const nextConfig = {
     output: 'standalone', // needed for Docker deployment
+    outputFileTracingRoot: __dirname,
     ...(serverActionsAllowedOrigins.length > 0
         ? {
               experimental: {

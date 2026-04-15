@@ -25,7 +25,7 @@ export default function Signup() {
     }
     return (
 
-        /* This page is temporarily redirected to root in middleware.ts ! */
+        /* This page is temporarily redirected to root in proxy.ts ! */
 
         <div className="flex min-h-[80vh]">
             <form onSubmit={handleSubmit} id='login_form' className="w-full max-w-lg m-auto">

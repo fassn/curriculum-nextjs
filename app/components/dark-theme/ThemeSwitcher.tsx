@@ -2,10 +2,11 @@
 "use client";
 
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 // import { SunIcon } from '@heroicons/react/24/outline';
 // import { MoonIcon } from '@heroicons/react/24/solid';
-import darkmode from '/public/dark-mode-icon.png'
-import lightmode from '/public/light-mode-icon.png'
+import darkmode from '@/public/dark-mode-icon.png'
+import lightmode from '@/public/light-mode-icon.png'
 import Image from "next/image";
 
 type themeSwitcherProps = {
@@ -14,6 +15,17 @@ type themeSwitcherProps = {
 
 const ThemeSwitcher = ({ className = '' }: themeSwitcherProps) => {
     const {systemTheme, theme, setTheme } = useTheme()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        // next-themes requires waiting for client mount before reading theme values.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setMounted(true)
+    }, [])
+
+    if (!mounted) {
+        return null
+    }
 
     const renderThemeChanger= () => {
         const currentTheme = theme === "system" ? systemTheme : theme ;

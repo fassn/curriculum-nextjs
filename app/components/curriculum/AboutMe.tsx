@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import profilePic from '/public/christopher_fargere.jpg'
+import profilePic from '@/public/christopher_fargere.jpg'
 
 const AboutMe = () => {
     return (
