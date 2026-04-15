@@ -28,3 +28,7 @@ Currently deployed on [christopherfargere.com](christopherfargere.com).
 When deploying behind a reverse proxy (Coolify/Traefik, Nginx, etc.), set
 `SERVER_ACTIONS_ALLOWED_ORIGINS` to your public host(s), comma-separated (for
 example: `christopherfargere.com,www.christopherfargere.com`).
+
+For contact form email delivery, also set:
+`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `CONTACT_TO_EMAIL`,
+`CONTACT_FROM_EMAIL`.

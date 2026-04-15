@@ -5,7 +5,6 @@ import Input from '../form/Input'
 import Label from '../form/Label'
 import GoogleReCaptchaWrapper from '../form/GoogleReCaptchaWrapper'
 import Textarea from '../form/Textarea'
-import addMessage from '../../firebase/firestore/add-message'
 import ValidationErrors from '../form/ValidationErrors'
 
 export default function WrappedContactForm() {
@@ -21,21 +20,39 @@ const ContactForm = () => {
     const [title, setTitle] = useState('')
     const [message, setMessage] = useState('')
     const [errors, setErrors] = useState<string[]>([])
+    const [successMessage, setSuccessMessage] = useState('')
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const handleSubmit = async (event: FormEvent) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         setErrors([])
+        setSuccessMessage('')
+        setIsSubmitting(true)
 
-        const res = await addMessage(email, title, message)
-        if (res?.error) {
-            setErrors([res.error])
-            return
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, title, message }),
+            })
+            const body = await response.json().catch(() => null)
+
+            if (!response.ok) {
+                setErrors([body?.error ?? 'Could not send your message right now. Please try again.'])
+                return
+            }
+
+            setEmail('')
+            setTitle('')
+            setMessage('')
+            setSuccessMessage('Your message was sent successfully.')
+        } catch {
+            setErrors(['Could not send your message right now. Please try again.'])
+        } finally {
+            setIsSubmitting(false)
         }
-
-        setEmail('')
-        setTitle('')
-        setMessage('')
-        setErrors([])
     }
 
     return (
@@ -48,6 +65,11 @@ const ContactForm = () => {
             </div>
             {/* Validation Errors */}
             <ValidationErrors className="mb-4" errors={errors} />
+            {successMessage && (
+                <div className="mb-4 text-sm text-green-600">
+                    {successMessage}
+                </div>
+            )}
 
             <form onSubmit={handleSubmit} id='contact_form' className="max-w-lg">
                 {/* Email Address */}
@@ -99,8 +121,9 @@ const ContactForm = () => {
                         type='submit'
                         className={`w-full items-center px-4 py-2 bg-gray-800 dark:bg-gray-200  border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150`}
                         tabIndex={1}
+                        disabled={isSubmitting}
                     >
-                        Send Message
+                        {isSubmitting ? 'Sending...' : 'Send Message'}
                     </button>
                 </div>
             </form>
