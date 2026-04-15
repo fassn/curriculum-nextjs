@@ -16,6 +16,59 @@ npm run dev
 With NextJS development server:
 Open [http://localhost:3000](http://localhost:3000).
 
+## Local PostgreSQL (Docker)
+
+Spin up a local PostgreSQL 16 container for testing admin auth seed + blog data:
+
+```bash
+npm run db:local:up
+```
+
+If port `5433` is already used on your machine, pick another host port:
+
+```bash
+LOCAL_POSTGRES_PORT=55433 npm run db:local:up
+```
+
+Use this local DB connection in `.env.local`:
+
+```bash
+DATABASE_URL=postgresql://curriculum:curriculum@localhost:5433/curriculum?schema=public
+```
+
+If you used a custom `LOCAL_POSTGRES_PORT`, update the port in `DATABASE_URL` to match.
+
+One-command bootstrap (start DB + wait + migrate + admin seed + sample posts):
+
+```bash
+ADMIN_EMAIL=admin@example.com ADMIN_PASSWORD=change-me-long-password npm run db:local:bootstrap
+```
+
+The bootstrap command uses `LOCAL_POSTGRES_PORT` (default `5433`) and computes
+`DATABASE_URL` automatically unless you provide your own.
+
+One-command reset (drop local DB volume/data, then run a clean bootstrap):
+
+```bash
+ADMIN_EMAIL=admin@example.com ADMIN_PASSWORD=change-me-long-password npm run db:local:reset
+```
+
+Apply migrations, create/update the single admin, and optionally insert sample posts:
+
+```bash
+npm run db:migrate:deploy
+ADMIN_EMAIL=admin@example.com ADMIN_PASSWORD=change-me-long-password npm run db:seed:admin
+npm run db:seed:sample-posts
+```
+
+When done:
+
+```bash
+npm run db:local:down
+# or remove volume/data too
+npm run db:local:down:volumes
+```
+
 ## Deploy
 
 Currently deployed on [christopherfargere.com](christopherfargere.com).

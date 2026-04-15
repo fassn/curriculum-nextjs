@@ -10,10 +10,17 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "db:local:up": "docker compose -f docker-compose.local-postgres.yml up -d",
+    "db:local:down": "docker compose -f docker-compose.local-postgres.yml down",
+    "db:local:down:volumes": "docker compose -f docker-compose.local-postgres.yml down -v",
+    "db:local:logs": "docker compose -f docker-compose.local-postgres.yml logs -f postgres",
+    "db:local:bootstrap": "bash ./scripts/db-local-bootstrap.sh",
+    "db:local:reset": "bash ./scripts/db-local-reset.sh",
     "db:generate": "prisma generate",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:migrate:status": "prisma migrate status",
-    "db:seed:admin": "node prisma/scripts/seed-admin-user.mjs"
+    "db:seed:admin": "node prisma/scripts/seed-admin-user.mjs",
+    "db:seed:sample-posts": "node prisma/scripts/seed-sample-posts.mjs"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.10",
