@@ -1,32 +1,54 @@
 'use client'
 
-import { ChangeEvent, FormEvent, useState } from "react"
-import Input from "../components/form/Input"
-import Label from "../components/form/Label"
-import ValidationErrors from "../components/form/ValidationErrors"
-
-
-import signIn from "../firebase/auth/signin"
+import { ChangeEvent, FormEvent, useState } from 'react'
+import Input from '../components/form/Input'
+import Label from '../components/form/Label'
+import ValidationErrors from '../components/form/ValidationErrors'
 import { useRouter } from 'next/navigation'
+
+type SignInResponse = {
+    error?: string
+}
+
 export default function Signin() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [errors, setErrors] = useState<string[]>([])
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const router = useRouter()
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         setErrors([])
+        setIsSubmitting(true)
 
-        const { error } = await signIn(email, password);
+        try {
+            const response = await fetch('/api/admin/session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                }),
+            })
 
-        if (error) {
-            const message = error instanceof Error ? error.message : 'Could not sign in. Please try again.'
-            setErrors([message])
-            return
+            const body = await response.json().catch(() => null) as SignInResponse | null
+            setIsSubmitting(false)
+
+            if (!response.ok) {
+                setErrors([body?.error ?? 'Could not sign in. Please try again.'])
+                return
+            }
+
+            router.push('/admin')
+            router.refresh()
+        } catch (error) {
+            console.error('Admin sign-in failed:', error)
+            setIsSubmitting(false)
+            setErrors(['Could not sign in. Please try again.'])
         }
-
-        return router.push("/admin")
     }
 
     return (
@@ -67,8 +89,9 @@ export default function Signin() {
                 <div className="flex items-center justify-end mt-4">
                     <button
                         type='submit'
-                        className={`w-full items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150`}
+                        className='w-full items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150'
                         tabIndex={1}
+                        disabled={isSubmitting}
                     >
                         Sign In
                     </button>

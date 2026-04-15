@@ -2,10 +2,10 @@
 
 import { Editor } from '@tinymce/tinymce-react'
 import { Editor as TinyMCEEditor } from 'tinymce';
-import addPost from '../firebase/firestore/add-post';
+import addPost from '../data/posts/add-post';
 import ValidationErrors from './form/ValidationErrors';
 import { useRef, useState } from 'react';
-import editPost from '../firebase/firestore/edit-post';
+import editPost from '../data/posts/edit-post';
 import { Post } from '../types/post';
 import { useRouter } from 'next/navigation';
 

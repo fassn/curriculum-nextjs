@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from './components/navbar/Navbar'
 import ThemeSwitcherProvider from './components/dark-theme/ThemeProvider'
-import { AuthContextProvider } from './context/auth-context'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,12 +20,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
         <body className={inter.className + ' dark:bg-charcoal'}>
             <ThemeSwitcherProvider>
-                <AuthContextProvider>
-                    <Navbar />
-                    <main>
-                        {children}
-                    </main>
-                </AuthContextProvider>
+                <Navbar />
+                <main>
+                    {children}
+                </main>
             </ThemeSwitcherProvider>
         </body>
     </html>

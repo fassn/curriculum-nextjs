@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
-import getPosts from "../firebase/firestore/get-posts"
+import getPosts from "../data/posts/get-posts"
 import { Post } from "../types/post"
 import DOMPurify from "isomorphic-dompurify"
 

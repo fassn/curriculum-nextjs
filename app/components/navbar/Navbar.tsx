@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import Dropdown from './DropDown'
 import { DropdownLink } from './DropdownLink'
 import NavLink from './NavLink'
@@ -11,21 +11,57 @@ import ResponsiveNavLink from './ResponsiveNavLink'
 import envelope from '@/public/envelope.png'
 import Image from 'next/image'
 import ThemeSwitcher from '../dark-theme/ThemeSwitcher'
-import { useAuthContext } from '../../context/auth-context'
-import { getAuth, signOut } from 'firebase/auth'
 
 const Navbar = () => {
     const pathName = usePathname()
+    const router = useRouter()
 
     const pdfCV =
         'https://drive.google.com/file/d/1igv7jM2cfg4mRkJoLbW9PpReLOIoXZ5s/view?usp=sharing'
 
     const [open, setOpen] = useState(false)
+    const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false)
 
-    const { user } = useAuthContext()
+    useEffect(() => {
+        let cancelled = false
 
-    const handleSignOut = () => {
-        signOut(getAuth())
+        fetch('/api/admin/session', { cache: 'no-store' })
+            .then(async (response) => {
+                if (!response.ok) {
+                    throw new Error('Could not read admin session.')
+                }
+                return response.json()
+            })
+            .then((body) => {
+                if (!cancelled) {
+                    setIsAdminAuthenticated(Boolean(body?.authenticated))
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+                if (!cancelled) {
+                    setIsAdminAuthenticated(false)
+                }
+            })
+
+        return () => {
+            cancelled = true
+        }
+    }, [pathName])
+
+    const handleSignOut = async () => {
+        const response = await fetch('/api/admin/session', {
+            method: 'DELETE',
+        })
+
+        if (!response.ok) {
+            console.error('Could not terminate admin session.')
+            return
+        }
+
+        setIsAdminAuthenticated(false)
+        router.push('/')
+        router.refresh()
     }
 
     return (
@@ -57,7 +93,7 @@ const Navbar = () => {
                                 Blog
                             </NavLink>
                         </div>
-                        { user ?
+                        { isAdminAuthenticated ?
                         <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                             <NavLink
                                 href="/admin"
@@ -72,7 +108,7 @@ const Navbar = () => {
                     <div className="hidden sm:flex sm:items-center sm:ml-6">
 
                         { /* Sign Out button */ }
-                        { user ? <button onClick={handleSignOut} className='text-amber-500'>Logout</button> : <></> }
+                        { isAdminAuthenticated ? <button onClick={handleSignOut} className='text-amber-500'>Logout</button> : <></> }
 
                         <ThemeSwitcher className='ml-5' />
 
@@ -117,7 +153,7 @@ const Navbar = () => {
                     <div className="-mr-2 flex items-center sm:hidden">
 
                         { /* Sign Out button */ }
-                        { user ? <button onClick={handleSignOut} className='text-amber-500'>Logout</button> : <></> }
+                        { isAdminAuthenticated ? <button onClick={handleSignOut} className='text-amber-500'>Logout</button> : <></> }
 
                         <ThemeSwitcher className='ml-5'/>
 

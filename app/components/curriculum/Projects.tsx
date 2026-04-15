@@ -55,7 +55,7 @@ const Projects = () => {
                     </ul>
                     <br />
                     Hosting/Database: <br/>
-                    <li className="list-item">Firebase</li>
+                    <li className="list-item">Coolify</li>
                 </div>
                 <div className="mb-8 lg:w-1/2 lg:pl-2">
                     <div className="flex">

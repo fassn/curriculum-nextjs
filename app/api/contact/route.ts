@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import { getClientIp } from '@/app/lib/request-ip'
+import { createRateLimiter } from '@/app/lib/rate-limit'
 
 export const runtime = 'nodejs'
 
@@ -13,7 +15,7 @@ type ContactPayload = {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
 const RATE_LIMIT_MAX_REQUESTS = 5
-const rateLimitStore = new Map<string, { count: number; resetAt: number }>()
+const contactRateLimiter = createRateLimiter(RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_REQUESTS)
 
 function sanitizeHeaderValue(value: string): string {
     return value.replace(/[\r\n]+/g, ' ').trim()
@@ -66,43 +68,6 @@ function parsePayload(body: unknown): ContactPayload | null {
     }
 }
 
-function getClientIp(request: Request): string {
-    const xForwardedFor = request.headers.get('x-forwarded-for')
-    if (xForwardedFor) {
-        return xForwardedFor.split(',')[0].trim()
-    }
-
-    const xRealIp = request.headers.get('x-real-ip')
-    if (xRealIp) {
-        return xRealIp.trim()
-    }
-
-    return 'unknown'
-}
-
-function isRateLimited(key: string): boolean {
-    const now = Date.now()
-
-    for (const [entryKey, entry] of rateLimitStore.entries()) {
-        if (entry.resetAt <= now) {
-            rateLimitStore.delete(entryKey)
-        }
-    }
-
-    const current = rateLimitStore.get(key)
-    if (!current || current.resetAt <= now) {
-        rateLimitStore.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
-        return false
-    }
-
-    if (current.count >= RATE_LIMIT_MAX_REQUESTS) {
-        return true
-    }
-
-    rateLimitStore.set(key, { ...current, count: current.count + 1 })
-    return false
-}
-
 async function verifyRecaptcha(token: string): Promise<{ ok: true } | { ok: false; error: string }> {
     const recaptchaSecret = process.env.RECAPTCHA_SECRET
     if (!recaptchaSecret) {
@@ -148,7 +113,7 @@ async function verifyRecaptcha(token: string): Promise<{ ok: true } | { ok: fals
 
 export async function POST(request: Request) {
     const clientIp = getClientIp(request)
-    if (isRateLimited(clientIp)) {
+    if (contactRateLimiter.isRateLimited(clientIp)) {
         return NextResponse.json(
             { error: 'Too many requests. Please try again in a few minutes.' },
             { status: 429 }

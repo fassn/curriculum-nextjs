@@ -1,80 +1,20 @@
-'use client'
-
-import { ChangeEvent, FormEvent, useState } from "react"
-import Input from "../components/form/Input"
-import Label from "../components/form/Label"
-import ValidationErrors from "../components/form/ValidationErrors"
-
-import signUp from "../firebase/auth/signup"
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function Signup() {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [errors, setErrors] = useState<string[]>([])
-    const router = useRouter()
-
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        setErrors([])
-
-        const { error } = await signUp(email, password);
-
-        if (error) {
-            const message = error instanceof Error ? error.message : 'Could not sign up. Please try again.'
-            setErrors([message])
-            return
-        }
-
-        return router.push("/admin")
-    }
     return (
-
-        /* This page is temporarily redirected to root in proxy.ts ! */
-
-        <div className="flex min-h-[80vh]">
-            <form onSubmit={handleSubmit} id='login_form' className="w-full max-w-lg m-auto">
-                <ValidationErrors className="mb-4" errors={errors} />
-                {/* Email Address */}
-                <Label htmlFor="email" className='dark:text-white'>Email</Label>
-
-                <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
-                    onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
-                    tabIndex={1}
-                    required
-                />
-
-                {/* Password */}
-                <div className="mt-4">
-                    <Label htmlFor="password" className='dark:text-white'>Password</Label>
-
-                    <Input
-                        id="password"
-                        type="password"
-                        value={password}
-                        className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
-                        onChange={(event: ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
-                        tabIndex={1}
-                        required
-                        autoComplete="current-password"
-                    />
-                </div>
-
-                {/* Submit */}
-                <div className="flex items-center justify-end mt-4">
-                    <button
-                        type='submit'
-                        className={`w-full items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150`}
-                        tabIndex={1}
-                    >
-                        Sign Up
-                    </button>
-                </div>
-            </form>
+        <div className="flex min-h-[80vh] items-center justify-center px-4">
+            <div className="max-w-lg text-center">
+                <h1 className="text-2xl font-semibold dark:text-white">Signup is disabled</h1>
+                <p className="mt-3 dark:text-gray-300">
+                    This app uses a single admin account. Please sign in with the existing admin user.
+                </p>
+                <Link
+                    className='inline-block mt-6 px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150'
+                    href='/signin'
+                >
+                    Go to Sign In
+                </Link>
+            </div>
         </div>
     )
 }
