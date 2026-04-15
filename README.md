@@ -32,3 +32,6 @@ example: `christopherfargere.com,www.christopherfargere.com`).
 For contact form email delivery, also set:
 `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `CONTACT_TO_EMAIL`,
 `CONTACT_FROM_EMAIL`.
+
+For server-side reCAPTCHA verification, set `NEXT_PUBLIC_RECAPTCHA_KEY`,
+`RECAPTCHA_SECRET`, and optionally `RECAPTCHA_MIN_SCORE` (default: `0.5`).

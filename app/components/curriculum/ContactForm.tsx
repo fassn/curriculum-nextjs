@@ -1,17 +1,35 @@
 'use client'
 
 import { ChangeEvent, FormEvent, useState } from 'react'
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import Input from '../form/Input'
 import Label from '../form/Label'
-import GoogleReCaptchaWrapper from '../form/GoogleReCaptchaWrapper'
 import Textarea from '../form/Textarea'
 import ValidationErrors from '../form/ValidationErrors'
 
 export default function WrappedContactForm() {
+    const recaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_KEY
+
+    if (!recaptchaKey) {
+        console.error("reCAPTCHA key is missing! Check your .env.local file.")
+        return (
+            <div className="p-4 text-red-500 bg-red-50 border border-red-200 rounded">
+                Contact form is currently unavailable (Missing configuration).
+            </div>
+        )
+    }
+
     return (
-        <GoogleReCaptchaWrapper>
+        <GoogleReCaptchaProvider
+            reCaptchaKey={recaptchaKey}
+            scriptProps={{
+                async: true,
+                defer: true,
+                appendTo: 'head',
+            }}
+        >
             <ContactForm />
-        </GoogleReCaptchaWrapper>
+        </GoogleReCaptchaProvider>
     )
 }
 
@@ -23,6 +41,8 @@ const ContactForm = () => {
     const [successMessage, setSuccessMessage] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
 
+    const { executeRecaptcha } = useGoogleReCaptcha()
+
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         setErrors([])
@@ -30,17 +50,30 @@ const ContactForm = () => {
         setIsSubmitting(true)
 
         try {
+            if (!executeRecaptcha) {
+                setErrors(['reCAPTCHA not loaded. Please refresh the page.'])
+                setIsSubmitting(false)
+                return
+            }
+
+            const recaptchaToken = await executeRecaptcha('contact_form_submit')
+
+            if (!recaptchaToken) {
+                setErrors(['Captcha verification failed.'])
+                setIsSubmitting(false)
+                return
+            }
+
             const response = await fetch('/api/contact', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, title, message }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, title, message, recaptchaToken }),
             })
+
             const body = await response.json().catch(() => null)
 
             if (!response.ok) {
-                setErrors([body?.error ?? 'Could not send your message right now. Please try again.'])
+                setErrors([body?.error ?? 'Submission failed.'])
                 return
             }
 
@@ -48,80 +81,70 @@ const ContactForm = () => {
             setTitle('')
             setMessage('')
             setSuccessMessage('Your message was sent successfully.')
-        } catch {
-            setErrors(['Could not send your message right now. Please try again.'])
+        } catch (err) {
+            setErrors(['An unexpected error occurred.'])
         } finally {
             setIsSubmitting(false)
         }
     }
 
     return (
-        <div
-            id="contact"
-            className="max-w-6xl my-4 py-4 px-4 sm:my-4 sm:mx-4 lg:px-8 xl:mx-auto">
+        <div id="contact" className="max-w-6xl my-4 py-4 px-4 lg:px-8 xl:mx-auto">
             <div>
-                <h2>Contact Me</h2>
+                <h2 className="text-2xl font-bold">Contact Me</h2>
                 <hr className="my-4" />
             </div>
-            {/* Validation Errors */}
+
             <ValidationErrors className="mb-4" errors={errors} />
+
             {successMessage && (
-                <div className="mb-4 text-sm text-green-600">
+                <div className="mb-4 text-sm text-green-600 font-medium">
                     {successMessage}
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} id='contact_form' className="max-w-lg">
-                {/* Email Address */}
-                <Label htmlFor="email" className='dark:text-white'>Email</Label>
+            <form onSubmit={handleSubmit} className="max-w-lg">
+                <div>
+                    <Label htmlFor="email" className='dark:text-white'>Email</Label>
+                    <Input
+                        id="email"
+                        type="email"
+                        value={email}
+                        className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
 
-                <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
-                    onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
-                    tabIndex={1}
-                    required
-                />
-
-                {/* Title */}
                 <div className="mt-4">
                     <Label htmlFor="title" className='dark:text-white'>Title</Label>
-
                     <Input
                         id="title"
                         type="text"
                         value={title}
-                        className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal "
-                        onChange={(event: ChangeEvent<HTMLInputElement>) => setTitle(event.target.value)}
-                        tabIndex={1}
+                        className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
                         required
                         autoComplete="off"
                     />
                 </div>
 
-                {/* Message */}
                 <div className="mt-4">
                     <Label htmlFor="message" className='dark:text-white'>Message</Label>
                     <Textarea
                         id="message"
-                        type="text"
                         value={message}
-                        className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal "
-                        onChange={(event: ChangeEvent<HTMLInputElement>) => setMessage(event.target.value)}
-                        tabIndex={1}
+                        className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)}
                         required
                     />
                 </div>
 
-                {/* Submit */}
                 <div className="flex items-center justify-end mt-4">
                     <button
                         type='submit'
-                        className={`w-full items-center px-4 py-2 bg-gray-800 dark:bg-gray-200  border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150`}
-                        tabIndex={1}
                         disabled={isSubmitting}
+                        className="w-full px-4 py-2 bg-gray-800 dark:bg-gray-200 rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:opacity-90 disabled:opacity-50 transition"
                     >
                         {isSubmitting ? 'Sending...' : 'Send Message'}
                     </button>
