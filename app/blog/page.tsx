@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import getPosts from "../firebase/firestore/get-posts"
 import { Post } from "../types/post"
+import DOMPurify from "isomorphic-dompurify"
 
 export default function Blog() {
     const [posts, setPosts] = useState<[key: string, Post][]>([])
@@ -23,7 +24,7 @@ export default function Blog() {
                                 { post[1].date }
                                 <hr className="mt-2"></hr>
                             </div>
-                            <div dangerouslySetInnerHTML={{ __html: post[1].content }}>
+                            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post[1].content) }}>
                             </div>
                     </li>
                 )) }

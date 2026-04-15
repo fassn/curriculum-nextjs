@@ -27,12 +27,14 @@ export default function TinyMCE({ postId, post }: { postId?: string, post?: Post
                 const res = await addPost(content)
                 if (res?.id) {
                     route.push('/admin/post/edit/' + res.id)
+                    return
                 }
                 if (res?.error) {
-                    console.log({res});
                     setErrors([res.error])
                     return
                 }
+                setErrors(['Could not save post. Please try again.'])
+                return
             }
 
             // Edit post
@@ -40,9 +42,11 @@ export default function TinyMCE({ postId, post }: { postId?: string, post?: Post
                 const updatedPost = { ...post, content }
                 const res = await editPost(postId, updatedPost)
                 if (res?.error) {
-                    console.log({res});
                     setErrors([res.error])
                     return
+                }
+                if (!res?.id) {
+                    setErrors(['Could not update post. Please try again.'])
                 }
             }
         }

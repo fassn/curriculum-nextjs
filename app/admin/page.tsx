@@ -26,14 +26,11 @@ export default function Admin() {
     return (
         <div className="flex flex-col max-w-6xl py-4 px-6 lg:px-8 sm:mx-4 xl:mx-auto">
             <div className="flex flex-col items-center mt-4">
-                <button
-                    className='w-1/2 items-center bg-gray-800 dark:bg-gray-200  border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150'>
-                    <Link
-                        className="block px-4 py-2"
-                        href='/admin/post/new'>
-                        New Post
-                    </Link>
-                </button>
+                <Link
+                    className='w-1/2 text-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-700 uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150'
+                    href='/admin/post/new'>
+                    New Post
+                </Link>
                 <hr className="w-full mt-4 mb-8"></hr>
             </div>
             { posts.length === 0 && <div>No posts yet.</div> }

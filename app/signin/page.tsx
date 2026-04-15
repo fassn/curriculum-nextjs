@@ -3,6 +3,7 @@
 import { ChangeEvent, FormEvent, useState } from "react"
 import Input from "../components/form/Input"
 import Label from "../components/form/Label"
+import ValidationErrors from "../components/form/ValidationErrors"
 
 
 import signIn from "../firebase/auth/signin"
@@ -10,15 +11,19 @@ import { useRouter } from 'next/navigation'
 export default function Signin() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [errors, setErrors] = useState<string[]>([])
     const router = useRouter()
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        setErrors([])
 
-        const { result, error } = await signIn(email, password);
+        const { error } = await signIn(email, password);
 
         if (error) {
-            return console.log(error)
+            const message = error instanceof Error ? error.message : 'Could not sign in. Please try again.'
+            setErrors([message])
+            return
         }
 
         return router.push("/admin")
@@ -27,6 +32,7 @@ export default function Signin() {
     return (
         <div className="flex min-h-[80vh]">
             <form onSubmit={handleSubmit} id='login_form' className="w-full max-w-lg m-auto">
+                <ValidationErrors className="mb-4" errors={errors} />
                 {/* Email Address */}
                 <Label htmlFor="email" className='dark:text-white'>Email</Label>
 
@@ -53,7 +59,7 @@ export default function Signin() {
                         onChange={(event: ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
                         tabIndex={1}
                         required
-                        autoComplete="current-title"
+                        autoComplete="current-password"
                     />
                 </div>
 

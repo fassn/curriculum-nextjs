@@ -6,6 +6,7 @@ type NavLinkProps = {
     active: boolean,
     className?: string,
     target?: string,
+    rel?: string,
     children: ReactNode,
     props?: any[],
 }

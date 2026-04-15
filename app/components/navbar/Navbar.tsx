@@ -45,6 +45,7 @@ const Navbar = () => {
                                 className="text-dark-red dark:text-deep-blue"
                                 href={pdfCV}
                                 target='_blank'
+                                rel='noopener noreferrer'
                                 active={pathName === '/'}>
                                 Download CV in PDF
                             </NavLink>
