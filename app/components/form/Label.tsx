@@ -1,11 +1,9 @@
-import { ReactNode } from 'react'
+import type { LabelHTMLAttributes, ReactNode } from 'react'
 
 type LabelProps = {
     className?: string,
     children: ReactNode,
-    htmlFor?: string,
-    props?: any[],
-}
+} & Omit<LabelHTMLAttributes<HTMLLabelElement>, 'className' | 'children'>
 
 const Label = ({ className, children, htmlFor, ...props }: LabelProps) => (
     <label

@@ -2,10 +2,10 @@ import React from 'react'
 import { Menu, Transition } from '@headlessui/react'
 
 type dropdownProps = {
-    align: string,
+    align: 'left' | 'top' | 'right',
     width: number | string,
     contentClasses?: string,
-    trigger?: any,
+    trigger?: React.ReactNode,
     children?: React.ReactNode,
 }
 

@@ -1,18 +1,16 @@
 import Link from 'next/link'
-import { ReactNode } from 'react'
+import type { LinkProps } from 'next/link'
+import type { AnchorHTMLAttributes, ReactNode } from 'react'
 
 type NavLinkProps = {
-    href?: string,
+    href: LinkProps['href'],
     active: boolean,
     className?: string,
-    target?: string,
-    rel?: string,
     children: ReactNode,
-    props?: any[],
-}
+} & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'className' | 'children'>
 
 const NavLink = ({
-    href = '/',
+    href,
     active = false,
     className = '',
     children,

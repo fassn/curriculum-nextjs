@@ -166,27 +166,27 @@ const Navbar = () => {
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             href="#about"
-                            active={pathName === '#about'}>
+                            active={pathName === '/'}>
                             About
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             href="#projects"
-                            active={pathName === '#projects'}>
+                            active={pathName === '/'}>
                             Projects
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             href="#experiences"
-                            active={pathName === '#experiences'}>
+                            active={pathName === '/'}>
                             Experiences
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             href="#ilove"
-                            active={pathName === '#ilove'}>
+                            active={pathName === '/'}>
                             I ♥
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             href="#contact"
-                            active={pathName === '#contact'}>
+                            active={pathName === '/'}>
                             <Image
                                 src={envelope}
                                 alt='envelope-icon'

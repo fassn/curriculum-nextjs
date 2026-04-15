@@ -1,12 +1,12 @@
-import { ReactNode } from 'react'
 import Link from 'next/link'
+import type { LinkProps } from 'next/link'
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react'
 import { Menu } from '@headlessui/react'
 
 type dropdownLinkProps = {
-    href: string,
+    href: LinkProps['href'],
     children: ReactNode,
-    props?: any[],
-}
+} & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'children'>
 
 export const DropdownLink = ({ href, children, ...props }: dropdownLinkProps) => (
     <Menu.Item>
@@ -26,8 +26,7 @@ export const DropdownLink = ({ href, children, ...props }: dropdownLinkProps) =>
 type dropdownButtonProps = {
     onClick: () => void,
     children: ReactNode,
-    props?: any[],
-}
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick' | 'children'>
 
 export const DropdownButton = ({ children, onClick, ...props }: dropdownButtonProps) => (
     <Menu.Item>

@@ -1,16 +1,16 @@
-import { ReactNode } from 'react'
 import Link from 'next/link'
+import type { LinkProps } from 'next/link'
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react'
 
 type ResponsiveNavLinkProps = {
-    href?: string,
+    href: LinkProps['href'],
     active: boolean,
     className?: string,
     children: ReactNode,
-    props?: any[],
-}
+} & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'className' | 'children'>
 
 const ResponsiveNavLink = ({
-    href = '',
+    href,
     active = false,
     className = '',
     children,
@@ -32,7 +32,7 @@ const ResponsiveNavLink = ({
     </Link>
 )
 
-export const ResponsiveNavButton = (props: any) => (
+export const ResponsiveNavButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => (
     <button
         className="block w-full pl-3 pr-4 py-2 border-l-4 text-left text-base font-medium leading-5 focus:outline-none transition duration-150 ease-in-out border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300"
         {...props}
