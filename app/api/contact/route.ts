@@ -15,7 +15,11 @@ type ContactPayload = {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
 const RATE_LIMIT_MAX_REQUESTS = 5
-const contactRateLimiter = createRateLimiter(RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_REQUESTS)
+const contactRateLimiter = createRateLimiter({
+    prefix: 'contact-form',
+    windowMs: RATE_LIMIT_WINDOW_MS,
+    maxRequests: RATE_LIMIT_MAX_REQUESTS,
+})
 
 function sanitizeHeaderValue(value: string): string {
     return value.replace(/[\r\n]+/g, ' ').trim()
@@ -113,10 +117,16 @@ async function verifyRecaptcha(token: string): Promise<{ ok: true } | { ok: fals
 
 export async function POST(request: Request) {
     const clientIp = getClientIp(request)
-    if (contactRateLimiter.isRateLimited(clientIp)) {
+    const rateLimitResult = await contactRateLimiter.check(clientIp)
+    if (rateLimitResult.limited) {
         return NextResponse.json(
             { error: 'Too many requests. Please try again in a few minutes.' },
-            { status: 429 }
+            {
+                status: 429,
+                headers: rateLimitResult.retryAfterSeconds
+                    ? { 'Retry-After': String(rateLimitResult.retryAfterSeconds) }
+                    : undefined,
+            }
         )
     }
 

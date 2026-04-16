@@ -21,10 +21,11 @@ type SessionRequestBody = {
 
 const SIGNIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000
 const SIGNIN_RATE_LIMIT_MAX_REQUESTS = 10
-const signinRateLimiter = createRateLimiter(
-    SIGNIN_RATE_LIMIT_WINDOW_MS,
-    SIGNIN_RATE_LIMIT_MAX_REQUESTS
-)
+const signinRateLimiter = createRateLimiter({
+    prefix: 'admin-signin',
+    windowMs: SIGNIN_RATE_LIMIT_WINDOW_MS,
+    maxRequests: SIGNIN_RATE_LIMIT_MAX_REQUESTS,
+})
 
 export async function GET() {
     const admin = await getAuthenticatedAdmin()
@@ -41,17 +42,23 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-    const clientIp = getClientIp(request)
-    if (signinRateLimiter.isRateLimited(clientIp)) {
-        return NextResponse.json(
-            { error: 'Too many sign-in attempts. Please try again later.' },
-            { status: 429 }
-        )
-    }
-
     const body = await request.json().catch(() => null) as SessionRequestBody | null
     const email = body?.email?.trim().toLowerCase()
     const password = body?.password
+
+    const clientIp = getClientIp(request)
+    const rateLimitResult = await signinRateLimiter.check(`${clientIp}|${email ?? 'unknown'}`)
+    if (rateLimitResult.limited) {
+        return NextResponse.json(
+            { error: 'Too many sign-in attempts. Please try again later.' },
+            {
+                status: 429,
+                headers: rateLimitResult.retryAfterSeconds
+                    ? { 'Retry-After': String(rateLimitResult.retryAfterSeconds) }
+                    : undefined,
+            }
+        )
+    }
 
     if (!email || !password) {
         return NextResponse.json({ error: 'Email and password are required.' }, { status: 400 })
