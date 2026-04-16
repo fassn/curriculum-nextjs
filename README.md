@@ -91,10 +91,13 @@ For admin authentication, set:
 `ADMIN_SESSION_SECRET` (long random string),
 `ADMIN_EMAIL`, and `ADMIN_PASSWORD`.
 
-Then apply the Prisma migration and seed/update the single admin user:
+Container startup now runs Prisma migration automatically by default
+(`RUN_DB_MIGRATIONS=true`).
+
+To seed/update the single admin user on deploy, set `RUN_ADMIN_SEED=true`
+for one deployment, then switch it back to `false`:
 
 ```bash
-npm run db:migrate:deploy
 npm run db:seed:admin
 ```
 
@@ -117,8 +120,9 @@ sign-in attempts.
      `DATABASE_URL`, `ADMIN_SESSION_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`,
      `SERVER_ACTIONS_ALLOWED_ORIGINS`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`,
      `SMTP_PASS`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`,
-     `NEXT_PUBLIC_RECAPTCHA_KEY`, `RECAPTCHA_SECRET`
-     (optional `RECAPTCHA_MIN_SCORE`).
+      `NEXT_PUBLIC_RECAPTCHA_KEY`, `RECAPTCHA_SECRET`
+      (optional `RECAPTCHA_MIN_SCORE`), `RUN_DB_MIGRATIONS` (default `true`),
+      `RUN_ADMIN_SEED` (default `false`).
    - Keep the old values copied somewhere safe before changing them.
 
 3. **Take a PostgreSQL backup before migration**
@@ -133,14 +137,10 @@ pg_dump "$DATABASE_URL" > pre-cutover-$(date +%F-%H%M%S).sql
    - Trigger deployment of the new commit/image.
    - Keep the previous successful deployment visible in history for rollback.
 
-5. **Run migration + admin seed on the deployed environment**
-   - Go to: **Terminal** (or command execution UI) for the running service.
-   - Execute:
-
-```bash
-npm run db:migrate:deploy
-npm run db:seed:admin
-```
+5. **Control migration + admin seed behavior for this deployment**
+    - Ensure `RUN_DB_MIGRATIONS=true` so startup applies pending migrations.
+    - If you need to create/update the admin user, set `RUN_ADMIN_SEED=true`
+      for this deploy only, then set it back to `false` afterward.
 
 6. **Watch logs and health in Coolify**
    - Go to: **Logs** tab and confirm no startup/runtime errors.
