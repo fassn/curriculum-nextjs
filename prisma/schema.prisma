@@ -12,6 +12,8 @@ model Post {
   content   String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([createdAt(sort: Desc), id(sort: Desc)])
 }
 
 model AdminUser {

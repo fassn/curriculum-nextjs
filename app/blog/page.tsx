@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function Blog() {
     const posts = await prisma.post.findMany({
-        orderBy: { createdAt: 'desc' },
+        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     })
 
     if (posts.length === 0) {

@@ -6,6 +6,7 @@ import Input from '../form/Input'
 import Label from '../form/Label'
 import Textarea from '../form/Textarea'
 import ValidationErrors from '../form/ValidationErrors'
+import { submitContactMessage } from '@/app/lib/frontend-api-client'
 
 export default function WrappedContactForm() {
     const recaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_KEY
@@ -63,16 +64,9 @@ const ContactForm = () => {
                 return
             }
 
-            const response = await fetch('/api/contact', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, title, message, recaptchaToken }),
-            })
-
-            const body = await response.json().catch(() => null)
-
+            const response = await submitContactMessage({ email, title, message, recaptchaToken })
             if (!response.ok) {
-                setErrors([body?.error ?? 'Submission failed.'])
+                setErrors([response.error])
                 return
             }
 

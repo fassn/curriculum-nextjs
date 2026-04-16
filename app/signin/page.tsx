@@ -5,10 +5,7 @@ import Input from '../components/form/Input'
 import Label from '../components/form/Label'
 import ValidationErrors from '../components/form/ValidationErrors'
 import { useRouter } from 'next/navigation'
-
-type SignInResponse = {
-    error?: string
-}
+import { signInAdminSession } from '@/app/lib/frontend-api-client'
 
 export default function Signin() {
     const [email, setEmail] = useState('')
@@ -23,22 +20,11 @@ export default function Signin() {
         setIsSubmitting(true)
 
         try {
-            const response = await fetch('/api/admin/session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                }),
-            })
-
-            const body = await response.json().catch(() => null) as SignInResponse | null
+            const response = await signInAdminSession({ email, password })
             setIsSubmitting(false)
 
             if (!response.ok) {
-                setErrors([body?.error ?? 'Could not sign in. Please try again.'])
+                setErrors([response.error])
                 return
             }
 

@@ -1,19 +1,20 @@
-My curriculum, portfolio and a small blog/diary with mood posts.
-Built with NextJS, PostgreSQL and Prisma.
+# Curriculum Next.js
+
+Curriculum/portfolio site with a small blog/diary.
+Built with Next.js, PostgreSQL, and Prisma.
 
 ## Getting Started
 
-- `npm i`
-- copy .env.example to .env.local
-- fill the missing credentials in .env.local
+1. `npm i`
+1. Copy `.env.example` to `.env.local`
+1. Fill required credentials in `.env.local`
 
-run the development server with NextJS:
+Run the development server:
 
 ```bash
 npm run dev
 ```
 
-With NextJS development server:
 Open [http://localhost:3000](http://localhost:3000).
 
 ## Local PostgreSQL (Docker)
@@ -36,7 +37,8 @@ Use this local DB connection in `.env.local`:
 DATABASE_URL=postgresql://curriculum:curriculum@localhost:5433/curriculum?schema=public
 ```
 
-If you used a custom `LOCAL_POSTGRES_PORT`, update the port in `DATABASE_URL` to match.
+If you used a custom `LOCAL_POSTGRES_PORT`, update the port in
+`DATABASE_URL` to match.
 
 One-command bootstrap (start DB + wait + migrate + admin seed + sample posts):
 
@@ -71,7 +73,7 @@ npm run db:local:down:volumes
 
 ## Deploy
 
-Currently deployed on [christopherfargere.com](christopherfargere.com).
+Currently deployed on [christopherfargere.com](https://christopherfargere.com).
 
 GitHub CI runs lint/test/build on every PR to `main`.
 Set branch protection so merge requires status check: `CI / quality-gates`.
@@ -80,32 +82,26 @@ When deploying behind a reverse proxy (Coolify/Traefik, Nginx, etc.), set
 `SERVER_ACTIONS_ALLOWED_ORIGINS` to your public host(s), comma-separated (for
 example: `christopherfargere.com,www.christopherfargere.com`).
 
-For contact form email delivery, also set:
-`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `CONTACT_TO_EMAIL`,
-`CONTACT_FROM_EMAIL`.
+Environment variable contract for container startup:
 
-For server-side reCAPTCHA verification, set `NEXT_PUBLIC_RECAPTCHA_KEY`,
-`RECAPTCHA_SECRET`, and optionally `RECAPTCHA_MIN_SCORE` (default: `0.5`).
+- **Always required**: `DATABASE_URL`, `ADMIN_SESSION_SECRET` (minimum 32 chars)
+- **Required in production** (contact feature): `RECAPTCHA_SECRET`,
+  `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `CONTACT_TO_EMAIL`,
+  `CONTACT_FROM_EMAIL`
+- **Client + tuning**: `NEXT_PUBLIC_RECAPTCHA_KEY`,
+  optional `RECAPTCHA_MIN_SCORE` (default `0.5`)
+- **Reverse proxy**: `SERVER_ACTIONS_ALLOWED_ORIGINS` (comma-separated hosts)
+- **Startup flags**: `RUN_DB_MIGRATIONS` (default `true`), `RUN_ADMIN_SEED`
+  (default `false`)
+- **Conditionally required when `RUN_ADMIN_SEED=true`**: `ADMIN_EMAIL`,
+  `ADMIN_PASSWORD` (minimum 12 chars)
 
-For PostgreSQL blog storage (Prisma), set:
-`DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/DB_NAME?schema=public`
+Container startup flow (`scripts/container-start.sh`):
 
-For admin authentication, set:
-`ADMIN_SESSION_SECRET` (long random string),
-`ADMIN_EMAIL`, and `ADMIN_PASSWORD`.
-
-At container startup, `npm run env:check` now validates required production
-environment variables and exits early if configuration is missing/invalid.
-
-Container startup now runs Prisma migration automatically by default
-(`RUN_DB_MIGRATIONS=true`).
-
-To seed/update the single admin user on deploy, set `RUN_ADMIN_SEED=true`
-for one deployment, then switch it back to `false`:
-
-```bash
-npm run db:seed:admin
-```
+1. `npm run env:check`
+1. `npm run db:migrate:deploy` when `RUN_DB_MIGRATIONS=true`
+1. `npm run db:seed:admin` when `RUN_ADMIN_SEED=true`
+1. Start Next.js server
 
 `POST /api/posts` and `PUT /api/posts/[postId]` now require
 an authenticated admin session cookie created by `/api/admin/session` plus a
@@ -116,43 +112,46 @@ sign-in attempts.
 
 ### Production cutover checklist
 
-1. **Open the target service in Coolify**
+1. **Open target service in Coolify**
    - Go to: **Project -> Environment -> Resource (your app service)**.
    - Confirm you are in the correct environment (staging vs production).
 
-2. **Update environment variables in Coolify UI**
+1. **Update environment variables in Coolify UI**
    - Go to: **Environment Variables** tab.
    - Ensure these are set and saved:
-     `DATABASE_URL`, `ADMIN_SESSION_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`,
-     `SERVER_ACTIONS_ALLOWED_ORIGINS`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`,
-     `SMTP_PASS`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`,
-      `NEXT_PUBLIC_RECAPTCHA_KEY`, `RECAPTCHA_SECRET`
-      (optional `RECAPTCHA_MIN_SCORE`), `RUN_DB_MIGRATIONS` (default `true`),
-      `RUN_ADMIN_SEED` (default `false`).
+      `DATABASE_URL`, `ADMIN_SESSION_SECRET`,
+      `SERVER_ACTIONS_ALLOWED_ORIGINS`,
+      `NEXT_PUBLIC_RECAPTCHA_KEY`, `RECAPTCHA_SECRET`,
+      `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`,
+      `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`,
+      optional `RECAPTCHA_MIN_SCORE`,
+      `RUN_DB_MIGRATIONS` (default `true`),
+      `RUN_ADMIN_SEED` (default `false`),
+      and `ADMIN_EMAIL` + `ADMIN_PASSWORD` only when `RUN_ADMIN_SEED=true`.
    - Keep the old values copied somewhere safe before changing them.
 
-3. **Take a PostgreSQL backup before migration**
+1. **Take PostgreSQL backup before migration**
    - From your DB host shell (or a trusted admin runner), run:
 
 ```bash
 pg_dump "$DATABASE_URL" > pre-cutover-$(date +%F-%H%M%S).sql
 ```
 
-4. **Deploy the new application version in Coolify**
+1. **Deploy new application version in Coolify**
    - Go to: **Deployments** tab.
    - Trigger deployment of the new commit/image.
    - Keep the previous successful deployment visible in history for rollback.
 
-5. **Control migration + admin seed behavior for this deployment**
+1. **Control migration + admin seed behavior for deployment**
     - Ensure `RUN_DB_MIGRATIONS=true` so startup applies pending migrations.
     - If you need to create/update the admin user, set `RUN_ADMIN_SEED=true`
       for this deploy only, then set it back to `false` afterward.
 
-6. **Watch logs and health in Coolify**
+1. **Watch logs and health in Coolify**
    - Go to: **Logs** tab and confirm no startup/runtime errors.
    - Confirm service is marked healthy/running after deployment.
 
-7. **Post-deploy smoke checks**
+1. **Run post-deploy smoke checks**
    - `GET /api/health` returns `{ "status": "ok" }`.
    - `GET /blog` returns posts.
    - Sign in via `/signin` with admin credentials.
@@ -166,7 +165,7 @@ pg_dump "$DATABASE_URL" > pre-cutover-$(date +%F-%H%M%S).sql
    - Select the last known-good deployment and redeploy it.
    - Re-check logs and health after rollback deployment finishes.
 
-2. **Database rollback (only if needed)**
+1. **Database rollback (only if needed)**
    - Restore from the backup taken before cutover:
 
 ```bash

@@ -3,9 +3,7 @@ import { prisma } from '@/app/lib/prisma'
 
 export default async function Admin() {
     const posts = await prisma.post.findMany({
-        orderBy: {
-            createdAt: 'desc',
-        },
+        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     })
 
     return (

@@ -1,15 +1,11 @@
 import { Post } from "@/app/types/post"
+import { getPostById } from '@/app/lib/frontend-api-client'
 
 export default async function getPost(postId: string): Promise<Post> {
-    const response = await fetch('/api/posts/' + postId, {
-        method: 'GET',
-        cache: 'no-store',
-    })
-
-    const body = await response.json().catch(() => null)
-    if (!response.ok || !body?.post) {
+    const response = await getPostById(postId)
+    if (!response.ok) {
         return { content: '', date: '' }
     }
 
-    return body.post as Post
+    return response.data
 }

@@ -11,6 +11,7 @@ import ResponsiveNavLink from './ResponsiveNavLink'
 import envelope from '@/public/envelope.png'
 import Image from 'next/image'
 import ThemeSwitcher from '../dark-theme/ThemeSwitcher'
+import { getAdminSession, signOutAdminSession } from '@/app/lib/frontend-api-client'
 
 const Navbar = () => {
     const pathName = usePathname()
@@ -25,17 +26,17 @@ const Navbar = () => {
     useEffect(() => {
         let cancelled = false
 
-        fetch('/api/admin/session', { cache: 'no-store' })
-            .then(async (response) => {
+        getAdminSession()
+            .then((response) => {
+                if (cancelled) {
+                    return
+                }
                 if (!response.ok) {
-                    throw new Error('Could not read admin session.')
+                    console.error(response.error)
+                    setIsAdminAuthenticated(false)
+                    return
                 }
-                return response.json()
-            })
-            .then((body) => {
-                if (!cancelled) {
-                    setIsAdminAuthenticated(Boolean(body?.authenticated))
-                }
+                setIsAdminAuthenticated(response.data.authenticated)
             })
             .catch((error) => {
                 console.error(error)
@@ -50,12 +51,9 @@ const Navbar = () => {
     }, [pathName])
 
     const handleSignOut = async () => {
-        const response = await fetch('/api/admin/session', {
-            method: 'DELETE',
-        })
-
+        const response = await signOutAdminSession()
         if (!response.ok) {
-            console.error('Could not terminate admin session.')
+            console.error(response.error)
             return
         }
 

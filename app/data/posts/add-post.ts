@@ -1,4 +1,5 @@
 import { getAdminCsrfTokenFromCookie } from '@/app/lib/get-csrf-token'
+import { createPost } from '@/app/lib/frontend-api-client'
 
 export type AddPostResponse = {
     id?: string,
@@ -11,23 +12,10 @@ export default async function addPost(content: string): Promise<AddPostResponse>
         return { error: 'Your admin session is invalid. Please sign in again.' }
     }
 
-    const response = await fetch('/api/posts', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': csrfToken,
-        },
-        body: JSON.stringify({ content }),
-    })
-
-    const body = await response.json().catch(() => null)
+    const response = await createPost({ content, csrfToken })
     if (!response.ok) {
-        return { error: body?.error ?? 'Post could not be created.' }
+        return { error: response.error }
     }
 
-    if (typeof body?.id !== 'string') {
-        return { error: 'Post could not be created.' }
-    }
-
-    return { id: body.id }
+    return { id: response.data.id }
 }
