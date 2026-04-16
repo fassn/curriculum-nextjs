@@ -37,7 +37,7 @@ jobs:
         run: npm run env:check
         env:
           DATABASE_URL: postgresql://user:password@localhost:5432/db?schema=public
-          ADMIN_SESSION_SECRET: 12345678901234567890123456789012
+          ADMIN_SESSION_SECRET: "ci-admin-session-secret-0123456789abcdef"
           RECAPTCHA_SECRET: recaptcha-secret
           RECAPTCHA_MIN_SCORE: "0.5"
           SMTP_HOST: smtp.example.com
