@@ -73,6 +73,9 @@ npm run db:local:down:volumes
 
 Currently deployed on [christopherfargere.com](christopherfargere.com).
 
+GitHub CI runs lint/test/build on every PR to `main`.
+Set branch protection so merge requires status check: `CI / quality-gates`.
+
 When deploying behind a reverse proxy (Coolify/Traefik, Nginx, etc.), set
 `SERVER_ACTIONS_ALLOWED_ORIGINS` to your public host(s), comma-separated (for
 example: `christopherfargere.com,www.christopherfargere.com`).

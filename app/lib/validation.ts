@@ -13,6 +13,11 @@ export type ContactPayload = {
     recaptchaToken: string
 }
 
+export type AdminSigninPayload = {
+    email: string
+    password: string
+}
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MAX_POST_CONTENT_LENGTH = 100000
 const MAX_CONTACT_TITLE_LENGTH = 120
@@ -83,5 +88,29 @@ export function parseContactPayload(body: unknown): ValidationResult<ContactPayl
     return {
         ok: true,
         data: normalized,
+    }
+}
+
+export function parseAdminSigninPayload(body: unknown): ValidationResult<AdminSigninPayload> {
+    if (!body || typeof body !== 'object') {
+        return { ok: false, error: 'Invalid request payload.' }
+    }
+
+    const { email, password } = body as Record<string, unknown>
+    if (typeof email !== 'string' || typeof password !== 'string') {
+        return { ok: false, error: 'Invalid request payload.' }
+    }
+
+    const normalizedEmail = email.trim().toLowerCase()
+    if (!normalizedEmail || !password) {
+        return { ok: false, error: 'Email and password are required.' }
+    }
+
+    return {
+        ok: true,
+        data: {
+            email: normalizedEmail,
+            password,
+        },
     }
 }

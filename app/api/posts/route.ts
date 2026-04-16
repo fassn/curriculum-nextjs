@@ -5,31 +5,17 @@ import { jsonError } from '@/app/lib/api-response'
 import { getAuthenticatedAdmin, hasValidAdminCsrfToken } from '@/app/lib/admin-auth'
 import { formatFrenchDate } from '@/app/lib/date-format'
 import { logError } from '@/app/lib/logger'
+import { parsePostsPaginationParams } from '@/app/lib/posts-pagination'
 import { parsePostPayload } from '@/app/lib/validation'
 
 export const runtime = 'nodejs'
-const DEFAULT_POSTS_LIMIT = 20
-const MAX_POSTS_LIMIT = 100
-
-function isUuid(value: string): boolean {
-    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
-}
 
 export async function GET(request: Request) {
-    const { searchParams } = new URL(request.url)
-    const cursor = searchParams.get('cursor')?.trim() ?? null
-    const requestedLimit = searchParams.get('limit')
-
-    const parsedLimit = requestedLimit ? Number(requestedLimit) : DEFAULT_POSTS_LIMIT
-    if (!Number.isInteger(parsedLimit) || parsedLimit <= 0) {
-        return jsonError('Query param "limit" must be a positive integer.', 400)
+    const parsedPagination = parsePostsPaginationParams(request.url)
+    if (!parsedPagination.ok) {
+        return jsonError(parsedPagination.error, 400)
     }
-
-    if (cursor && !isUuid(cursor)) {
-        return jsonError('Query param "cursor" must be a valid post id.', 400)
-    }
-
-    const limit = Math.min(parsedLimit, MAX_POSTS_LIMIT)
+    const { cursor, limit } = parsedPagination.data
 
     let posts
     try {

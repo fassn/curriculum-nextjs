@@ -8,17 +8,14 @@ import {
     getAdminCsrfCookieOptions,
     getAdminSessionCookieOptions,
 } from '@/app/lib/admin-session-token'
+import { jsonError } from '@/app/lib/api-response'
 import { getAuthenticatedAdmin } from '@/app/lib/admin-auth'
 import { logError } from '@/app/lib/logger'
 import { getClientIp } from '@/app/lib/request-ip'
 import { createRateLimiter } from '@/app/lib/rate-limit'
+import { parseAdminSigninPayload } from '@/app/lib/validation'
 
 export const runtime = 'nodejs'
-
-type SessionRequestBody = {
-    email?: string
-    password?: string
-}
 
 const SIGNIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000
 const SIGNIN_RATE_LIMIT_MAX_REQUESTS = 10
@@ -43,30 +40,27 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-    const body = await request.json().catch(() => null) as SessionRequestBody | null
-    const email = body?.email?.trim().toLowerCase()
-    const password = body?.password
+    const body = await request.json().catch(() => null)
+    const parsedPayload = parseAdminSigninPayload(body)
+    const email = parsedPayload.ok ? parsedPayload.data.email : undefined
 
     const clientIp = getClientIp(request)
     const rateLimitResult = await signinRateLimiter.check(`${clientIp}|${email ?? 'unknown'}`)
     if (rateLimitResult.limited) {
-        return NextResponse.json(
-            { error: 'Too many sign-in attempts. Please try again later.' },
-            {
-                status: 429,
-                headers: rateLimitResult.retryAfterSeconds
-                    ? { 'Retry-After': String(rateLimitResult.retryAfterSeconds) }
-                    : undefined,
-            }
-        )
+        return jsonError('Too many sign-in attempts. Please try again later.', 429, {
+            headers: rateLimitResult.retryAfterSeconds
+                ? { 'Retry-After': String(rateLimitResult.retryAfterSeconds) }
+                : undefined,
+        })
     }
 
-    if (!email || !password) {
-        return NextResponse.json({ error: 'Email and password are required.' }, { status: 400 })
+    if (!parsedPayload.ok) {
+        return jsonError(parsedPayload.error, 400)
     }
+    const { password } = parsedPayload.data
 
     const admin = await prisma.adminUser.findUnique({
-        where: { email },
+        where: { email: parsedPayload.data.email },
         select: {
             id: true,
             email: true,
@@ -75,12 +69,12 @@ export async function POST(request: Request) {
     })
 
     if (!admin) {
-        return NextResponse.json({ error: 'Invalid credentials.' }, { status: 401 })
+        return jsonError('Invalid credentials.', 401)
     }
 
     const isValidPassword = await bcrypt.compare(password, admin.passwordHash)
     if (!isValidPassword) {
-        return NextResponse.json({ error: 'Invalid credentials.' }, { status: 401 })
+        return jsonError('Invalid credentials.', 401)
     }
 
     let token: string
@@ -91,7 +85,7 @@ export async function POST(request: Request) {
         })
     } catch (error) {
         logError('admin.session_token_create_failed', error, { adminId: admin.id })
-        return NextResponse.json({ error: 'Server auth is not configured.' }, { status: 500 })
+        return jsonError('Server auth is not configured.', 500)
     }
 
     const response = NextResponse.json({

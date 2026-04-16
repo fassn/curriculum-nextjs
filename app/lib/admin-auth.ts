@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
-import { timingSafeEqual } from 'node:crypto'
 import { redirect } from 'next/navigation'
+import { areCsrfTokensEqual } from '@/app/lib/csrf'
 import { prisma } from '@/app/lib/prisma'
 import {
     ADMIN_CSRF_COOKIE_NAME,
@@ -57,13 +57,5 @@ export async function hasValidAdminCsrfToken(request: Request): Promise<boolean>
         return false
     }
 
-    const encoder = new TextEncoder()
-    const headerBuffer = encoder.encode(headerToken)
-    const cookieBuffer = encoder.encode(cookieToken)
-
-    if (headerBuffer.length !== cookieBuffer.length) {
-        return false
-    }
-
-    return timingSafeEqual(headerBuffer, cookieBuffer)
+    return areCsrfTokensEqual(headerToken, cookieToken)
 }
