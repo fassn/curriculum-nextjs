@@ -11,7 +11,6 @@ export default function WrappedContactForm() {
     const recaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_KEY
 
     if (!recaptchaKey) {
-        console.error("reCAPTCHA key is missing! Check your .env.local file.")
         return (
             <div className="p-4 text-red-500 bg-red-50 border border-red-200 rounded">
                 Contact form is currently unavailable (Missing configuration).

@@ -28,9 +28,9 @@ COPY . .
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
+  if [ -f yarn.lock ]; then yarn run db:generate && yarn run build; \
+  elif [ -f package-lock.json ]; then npm run db:generate && npm run build; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run db:generate && pnpm run build; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
@@ -46,6 +46,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/prisma ./prisma
 
 # Set the correct permission for prerender cache
 RUN mkdir .next
@@ -55,6 +56,8 @@ RUN chown nextjs:nodejs .next
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Keep full dependency tree available for runtime migrate/seed scripts.
+COPY --from=builder /app/node_modules ./node_modules
 
 USER nextjs
 
