@@ -9,6 +9,11 @@ const Experiences = () => {
             </div>
             <div className="flex">
                 <div className="flex-1 max-w-xl mr-2">
+                    <b>2024 - 2025</b>
+                    <br />
+                    Full-Stack developer – Mister Harry
+                    <br />
+                    <br />
                     <b>2019 - 2021</b>
                     <br />
                     Full-Stack developer – One Heart Communication

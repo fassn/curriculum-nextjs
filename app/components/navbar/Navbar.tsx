@@ -63,7 +63,7 @@ const Navbar = () => {
     }
 
     return (
-        <nav className="fixed top-0 right-0 left-0 mb-40 z-50 bg-white dark:bg-gray-700 border-b border-gray-100 dark:border-none">
+        <nav className="fixed top-0 right-0 left-0 mb-40 z-50 bg-stone-100 dark:bg-gray-700 border-b border-gray-100 dark:border-none">
             {/* Primary Navigation Menu */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
@@ -76,16 +76,6 @@ const Navbar = () => {
                         </div>
 
                         {/* Navigation Links */}
-                        <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                            <NavLink
-                                className="text-dark-red dark:text-deep-blue"
-                                href={pdfCV}
-                                target='_blank'
-                                rel='noopener noreferrer'
-                                active={pathName === '/'}>
-                                Download CV in PDF
-                            </NavLink>
-                        </div>
                         <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                             <NavLink
                                 href="/blog"
@@ -106,11 +96,20 @@ const Navbar = () => {
 
                     {/* Settings Dropdown */}
                     <div className="hidden sm:flex sm:items-center sm:ml-6">
+                        <ThemeSwitcher />
+
+                        <a
+                            href={pdfCV}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Download CV PDF"
+                            className="ml-5 text-sm font-medium text-gray-500 dark:text-gray-200 hover:text-gray-700 dark:hover:text-white transition"
+                        >
+                            CV
+                        </a>
 
                         { /* Sign Out button */ }
-                        { isAdminAuthenticated ? <button onClick={handleSignOut} className='text-amber-500'>Logout</button> : <></> }
-
-                        <ThemeSwitcher className='ml-5' />
+                        { isAdminAuthenticated ? <button onClick={handleSignOut} className='ml-5 text-amber-500'>Logout</button> : <></> }
 
                         { pathName === '/' && // hide dropdown if not on '/' CV page
                             <Dropdown
@@ -151,11 +150,20 @@ const Navbar = () => {
 
                     {/* Hamburger */}
                     <div className="-mr-2 flex items-center sm:hidden">
+                        <ThemeSwitcher />
+
+                        <a
+                            href={pdfCV}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Download CV PDF"
+                            className="ml-5 text-sm font-medium text-gray-500 dark:text-gray-200"
+                        >
+                            CV
+                        </a>
 
                         { /* Sign Out button */ }
-                        { isAdminAuthenticated ? <button onClick={handleSignOut} className='text-amber-500'>Logout</button> : <></> }
-
-                        <ThemeSwitcher className='ml-5'/>
+                        { isAdminAuthenticated ? <button onClick={handleSignOut} className='ml-5 text-amber-500'>Logout</button> : <></> }
 
                         { pathName === '/' && // hide hamburger menu if not on '/' CV page
                             <button
@@ -194,12 +202,6 @@ const Navbar = () => {
             {open && (
                 <div className="block sm:hidden">
                     <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink
-                            className="text-dark-red dark:text-deep-blue"
-                            href={pdfCV}
-                            active={pathName === '/'}>
-                            Download CV in PDF
-                        </ResponsiveNavLink>
                         <ResponsiveNavLink
                             href="#about"
                             active={pathName === '/'}>

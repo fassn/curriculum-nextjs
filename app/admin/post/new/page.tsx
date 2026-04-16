@@ -1,9 +1,9 @@
-import TinyMCE from "@/app/components/TinyMCE";
+import PostEditor from "@/app/components/PostEditor";
 
 export default function NewPost() {
     return (
         <div>
-            <TinyMCE></TinyMCE>
+            <PostEditor></PostEditor>
         </div>
     )
 }

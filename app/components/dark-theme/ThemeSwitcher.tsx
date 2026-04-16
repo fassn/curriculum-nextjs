@@ -1,6 +1,6 @@
 "use client"
 
-import { useTheme } from "next-themes"
+import { useTheme } from './ThemeProvider'
 import { useEffect, useState } from "react"
 import darkmode from '@/public/dark-mode-icon.png'
 import lightmode from '@/public/light-mode-icon.png'
@@ -15,7 +15,6 @@ const ThemeSwitcher = ({ className = '' }: themeSwitcherProps) => {
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
-        // next-themes requires waiting for client mount before reading theme values.
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true)
     }, [])

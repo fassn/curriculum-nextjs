@@ -55,7 +55,9 @@ const Projects = () => {
                     </ul>
                     <br />
                     Hosting/Database: <br/>
-                    <li className="list-item">Coolify</li>
+                    <ul className="list-disc list-inside">
+                        <li className="list-item">Coolify</li>
+                    </ul>
                 </div>
                 <div className="mb-8 lg:w-1/2 lg:pl-2">
                     <div className="flex">
@@ -84,13 +86,15 @@ const Projects = () => {
                     <br />
                     Stack:
                     <ul className="list-disc list-inside">
-                        <li>NextJS</li>
+                        <li>Symfony</li>
                         <li>TailwindCSS</li>
                         <li>PostgreSQL</li>
                     </ul>
                     <br />
                     Hosting/Database:
-                    <li>Fly.io</li>
+                    <ul className="list-disc list-inside">
+                        <li>Coolify</li>
+                    </ul>
                 </div>
                 <div className="mb-8 lg:w-1/2 lg:pr-2">
                     <div className="flex">
@@ -106,27 +110,30 @@ const Projects = () => {
                         </a>
                     </div>
                     <br />
-                    <i>A multiplayer reimplementation of classic Tetris.<br />
-                    NB: This is currently a MVP. Planning to add more features - time-attack mode, speed levels, highscore board, etc.</i>
+                    <i>A multiplayer reimplementation of classic Tetris.</i>
                     <br />
                     <br />
                     Features:
                     <ul className="list-disc list-inside">
-                        <li>Solo or 2-player games over websockets</li>
+                        <li>Solo or up to 4-player games over websockets</li>
                         <li>A lobby with a live chat to taunt your opponent & get ready</li>
-                        <li>Animated end-screen for the winner</li>
+                        <li>Progressive leveling</li>
+                        <li>Highscores board</li>
+                        <li>Classic or time-attack mode</li>
                     </ul>
                     <br />
                     Stack:
                     <ul className="list-disc list-inside">
                         <li>NextJS</li>
                         <li>TailwindCSS</li>
-                        <li>P5JS</li>
+                        <li>Canvas</li>
                         <li>SocketIO</li>
                     </ul>
                     <br />
                     Hosting/Database:
-                    <li>Fly.io</li>
+                    <ul className="list-disc list-inside">
+                        <li>Coolify</li>
+                    </ul>
                 </div>
                 <div className="mb-8 lg:w-1/2 lg:pl-2">
                     {/* Add new project here */}

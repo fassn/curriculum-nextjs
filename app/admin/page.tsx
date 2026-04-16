@@ -20,7 +20,7 @@ export default async function Admin() {
             <ul>
                 { posts.length > 0 && posts.map((post) => (
                     <li
-                        className="flex justify-between w-full p-4 my-4 dark:bg-gray-700 shadow-sm shadow-gray-400 dark:shadow-none rounded"
+                        className="flex justify-between w-full p-4 my-4 bg-white dark:bg-gray-700 shadow-sm shadow-gray-400 dark:shadow-none rounded"
                         key={post.id}>
                         {post.content}
                         <Link href={'/admin/post/edit/' + post.id}>

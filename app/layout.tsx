@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import 'quill/dist/quill.snow.css'
 import Navbar from './components/navbar/Navbar'
 import ThemeSwitcherProvider from './components/dark-theme/ThemeProvider'
 
@@ -43,7 +44,7 @@ export default function RootLayout({
 }) {
     return (
     <html lang="en" suppressHydrationWarning>
-        <body className={inter.className + ' dark:bg-charcoal'}>
+        <body className={inter.className + ' bg-stone-100 text-gray-900 dark:bg-charcoal dark:text-gray-100'}>
             <ThemeSwitcherProvider>
                 <Navbar />
                 <main>

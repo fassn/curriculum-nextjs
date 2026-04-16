@@ -1,6 +1,6 @@
 'use client'
 
-import TinyMCE from "@/app/components/TinyMCE"
+import PostEditor from "@/app/components/PostEditor"
 import getPost from "@/app/data/posts/get-post"
 import { Post } from "@/app/types/post"
 import { use, useEffect, useState } from "react"
@@ -16,7 +16,7 @@ export default function EditPost({ params }: { params: Promise<{ postId: string 
     if (!post.date) return <div>Loading...</div>
     return (
         <div>
-            <TinyMCE postId={postId} post={post}></TinyMCE>
+            <PostEditor postId={postId} post={post}></PostEditor>
         </div>
     )
 }

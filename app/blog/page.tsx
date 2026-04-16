@@ -18,7 +18,7 @@ export default async function Blog() {
             <ul>
                 {posts.map((post) => (
                     <li
-                        className="w-full p-4 mb-10 dark:bg-gray-700 shadow-sm shadow-gray-400 dark:shadow-none rounded"
+                        className="w-full p-4 mb-10 bg-white dark:bg-gray-700 shadow-sm shadow-gray-400 dark:shadow-none rounded"
                         key={post.id}
                     >
                         <div className="w-fit h-8 mb-6">
