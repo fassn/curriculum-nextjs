@@ -1,20 +1,17 @@
+"use client"
 
-"use client";
-
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-// import { SunIcon } from '@heroicons/react/24/outline';
-// import { MoonIcon } from '@heroicons/react/24/solid';
+import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
 import darkmode from '@/public/dark-mode-icon.png'
 import lightmode from '@/public/light-mode-icon.png'
-import Image from "next/image";
+import Image from "next/image"
 
 type themeSwitcherProps = {
     className?: string
 }
 
 const ThemeSwitcher = ({ className = '' }: themeSwitcherProps) => {
-    const {systemTheme, theme, setTheme } = useTheme()
+    const { systemTheme, theme, setTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
@@ -27,42 +24,32 @@ const ThemeSwitcher = ({ className = '' }: themeSwitcherProps) => {
         return null
     }
 
-    const renderThemeChanger= () => {
-        const currentTheme = theme === "system" ? systemTheme : theme ;
+    const renderThemeChanger = () => {
+        const currentTheme = theme === "system" ? systemTheme : theme
+        const isDark = currentTheme === "dark"
+        const nextTheme = isDark ? 'light' : 'dark'
+        const icon = isDark ? lightmode : darkmode
+        const alt = isDark ? 'Switch to light mode' : 'Switch to dark mode'
 
-        if(currentTheme ==="dark") {
-            return (
+        return (
+            <button
+                type="button"
+                onClick={() => setTheme(nextTheme)}
+                aria-label={alt}
+                className={className}
+            >
                 <Image
-                    src={lightmode}
-                    alt='light mode icon'
-                    className={className}
-                    width='24'
-                    height='24'
-                    style={{ filter: 'invert(1)' }}
-                    role="button"
-                    onClick={() => setTheme('light')}
+                    src={icon}
+                    alt={alt}
+                    width={24}
+                    height={24}
+                    style={isDark ? { filter: 'invert(1)' } : undefined}
                 />
-            )
-        } else {
-            return (
-                <Image
-                    src={darkmode}
-                    alt='dark mode icon'
-                    className={className}
-                    width='24'
-                    height='24'
-                    role="button"
-                    onClick={() => setTheme('dark')}
-                />
-            )
-        }
+            </button>
+        )
     }
 
-    return (
-        <>
-            { renderThemeChanger() }
-        </>
-    )
+    return renderThemeChanger()
 }
 
 export default ThemeSwitcher

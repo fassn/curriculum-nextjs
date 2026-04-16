@@ -1,4 +1,8 @@
-const Textarea = ({ disabled = false, rows = 3, className = '', ...props }) => (
+import type { TextareaHTMLAttributes } from 'react'
+
+type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement>
+
+const Textarea = ({ disabled = false, rows = 3, className = '', ...props }: TextareaProps) => (
     <textarea
         disabled={disabled}
         rows={rows}

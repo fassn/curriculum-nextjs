@@ -1,15 +1,8 @@
 import DOMPurify from 'isomorphic-dompurify'
+import { formatFrenchDate } from '@/app/lib/date-format'
 import { prisma } from '@/app/lib/prisma'
 
 export const dynamic = 'force-dynamic'
-
-function formatFrenchDate(date: Date): string {
-    return new Intl.DateTimeFormat('fr-FR', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-    }).format(date)
-}
 
 export default async function Blog() {
     const posts = await prisma.post.findMany({

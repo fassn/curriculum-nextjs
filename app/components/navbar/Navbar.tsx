@@ -72,7 +72,9 @@ const Navbar = () => {
                     <div className="flex">
                         {/* Logo */}
                         <div className="flex-shrink-0 flex items-center">
-                            <Link href="/">↑</Link>
+                            <Link href="/" aria-label="Go to home page" className="font-semibold">
+                                Home
+                            </Link>
                         </div>
 
                         {/* Navigation Links */}

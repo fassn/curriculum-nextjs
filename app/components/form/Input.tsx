@@ -1,4 +1,8 @@
-const Input = ({ disabled = false, autoFocus = false, className = '', ...props }) => (
+import type { InputHTMLAttributes } from 'react'
+
+type InputProps = InputHTMLAttributes<HTMLInputElement>
+
+const Input = ({ disabled = false, autoFocus = false, className = '', ...props }: InputProps) => (
     <input
         disabled={disabled}
         autoFocus={autoFocus}

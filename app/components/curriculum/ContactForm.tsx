@@ -1,6 +1,6 @@
 'use client'
 
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import Input from '../form/Input'
 import Label from '../form/Label'
@@ -42,7 +42,7 @@ const ContactForm = () => {
 
     const { executeRecaptcha } = useGoogleReCaptcha()
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         setErrors([])
         setSuccessMessage('')
@@ -134,7 +134,7 @@ const ContactForm = () => {
                         id="message"
                         value={message}
                         className="block mt-1 w-full dark:bg-gray-200 dark:text-charcoal"
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)}
+                        onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setMessage(e.target.value)}
                         required
                     />
                 </div>

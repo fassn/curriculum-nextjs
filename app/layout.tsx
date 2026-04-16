@@ -5,10 +5,35 @@ import Navbar from './components/navbar/Navbar'
 import ThemeSwitcherProvider from './components/dark-theme/ThemeProvider'
 
 const inter = Inter({ subsets: ['latin'] })
+const siteUrl = 'https://christopherfargere.com'
 
 export const metadata: Metadata = {
-    title: "Christopher Fargere's Curriculum Vitae",
-    description: 'A beautiful CV.',
+    metadataBase: new URL(siteUrl),
+    title: {
+        default: "Christopher Fargere's Curriculum Vitae",
+        template: "%s | Christopher Fargere",
+    },
+    description: 'Curriculum, portfolio, and blog by Christopher Fargere.',
+    alternates: {
+        canonical: '/',
+    },
+    openGraph: {
+        title: "Christopher Fargere's Curriculum Vitae",
+        description: 'Curriculum, portfolio, and blog by Christopher Fargere.',
+        url: siteUrl,
+        siteName: 'Christopher Fargere',
+        locale: 'en_US',
+        type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: "Christopher Fargere's Curriculum Vitae",
+        description: 'Curriculum, portfolio, and blog by Christopher Fargere.',
+    },
+    robots: {
+        index: true,
+        follow: true,
+    },
 }
 
 export default function RootLayout({

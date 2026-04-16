@@ -1,18 +1,13 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import { jsonError } from '@/app/lib/api-response'
 import { getClientIp } from '@/app/lib/request-ip'
+import { logError } from '@/app/lib/logger'
 import { createRateLimiter } from '@/app/lib/rate-limit'
+import { parseContactPayload } from '@/app/lib/validation'
 
 export const runtime = 'nodejs'
 
-type ContactPayload = {
-    email: string
-    title: string
-    message: string
-    recaptchaToken: string
-}
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
 const RATE_LIMIT_MAX_REQUESTS = 5
 const contactRateLimiter = createRateLimiter({
@@ -23,53 +18,6 @@ const contactRateLimiter = createRateLimiter({
 
 function sanitizeHeaderValue(value: string): string {
     return value.replace(/[\r\n]+/g, ' ').trim()
-}
-
-function validatePayload(payload: ContactPayload): string | null {
-    if (!payload.email || !payload.title || !payload.message) {
-        return 'All fields are required.'
-    }
-
-    if (!payload.recaptchaToken) {
-        return 'Captcha verification is required.'
-    }
-
-    if (!EMAIL_REGEX.test(payload.email)) {
-        return 'Please provide a valid email address.'
-    }
-
-    if (payload.title.length > 120) {
-        return 'Title is too long (max 120 characters).'
-    }
-
-    if (payload.message.length > 5000) {
-        return 'Message is too long (max 5000 characters).'
-    }
-
-    return null
-}
-
-function parsePayload(body: unknown): ContactPayload | null {
-    if (!body || typeof body !== 'object') {
-        return null
-    }
-
-    const { email, title, message, recaptchaToken } = body as Record<string, unknown>
-    if (
-        typeof email !== 'string' ||
-        typeof title !== 'string' ||
-        typeof message !== 'string' ||
-        typeof recaptchaToken !== 'string'
-    ) {
-        return null
-    }
-
-    return {
-        email: email.trim(),
-        title: title.trim(),
-        message: message.trim(),
-        recaptchaToken: recaptchaToken.trim(),
-    }
 }
 
 async function verifyRecaptcha(token: string): Promise<{ ok: true } | { ok: false; error: string }> {
@@ -119,31 +67,23 @@ export async function POST(request: Request) {
     const clientIp = getClientIp(request)
     const rateLimitResult = await contactRateLimiter.check(clientIp)
     if (rateLimitResult.limited) {
-        return NextResponse.json(
-            { error: 'Too many requests. Please try again in a few minutes.' },
-            {
-                status: 429,
-                headers: rateLimitResult.retryAfterSeconds
-                    ? { 'Retry-After': String(rateLimitResult.retryAfterSeconds) }
-                    : undefined,
-            }
-        )
+        return jsonError('Too many requests. Please try again in a few minutes.', 429, {
+            headers: rateLimitResult.retryAfterSeconds
+                ? { 'Retry-After': String(rateLimitResult.retryAfterSeconds) }
+                : undefined,
+        })
     }
 
     const body = await request.json().catch(() => null)
-    const payload = parsePayload(body)
-    if (!payload) {
-        return NextResponse.json({ error: 'Invalid request payload.' }, { status: 400 })
+    const parsedPayload = parseContactPayload(body)
+    if (!parsedPayload.ok) {
+        return jsonError(parsedPayload.error, 400)
     }
-
-    const validationError = validatePayload(payload)
-    if (validationError) {
-        return NextResponse.json({ error: validationError }, { status: 400 })
-    }
+    const payload = parsedPayload.data
 
     const recaptchaValidation = await verifyRecaptcha(payload.recaptchaToken)
     if (!recaptchaValidation.ok) {
-        return NextResponse.json({ error: recaptchaValidation.error }, { status: 400 })
+        return jsonError(recaptchaValidation.error, 400)
     }
 
     const smtpHost = process.env.SMTP_HOST
@@ -154,18 +94,12 @@ export async function POST(request: Request) {
     const fromEmail = process.env.CONTACT_FROM_EMAIL
 
     if (!smtpHost || !smtpPort || !smtpUser || !smtpPass || !toEmail || !fromEmail) {
-        return NextResponse.json(
-            { error: 'Email service is not configured on the server.' },
-            { status: 500 }
-        )
+        return jsonError('Email service is not configured on the server.', 500)
     }
 
     const port = Number(smtpPort)
     if (!Number.isInteger(port) || port <= 0) {
-        return NextResponse.json(
-            { error: 'Server email configuration is invalid (SMTP_PORT).' },
-            { status: 500 }
-        )
+        return jsonError('Server email configuration is invalid (SMTP_PORT).', 500)
     }
 
     const transporter = nodemailer.createTransport({
@@ -195,11 +129,8 @@ export async function POST(request: Request) {
             ].join('\n'),
         })
     } catch (error) {
-        console.error('Contact email send failed:', error)
-        return NextResponse.json(
-            { error: 'Could not send your message right now. Please try again.' },
-            { status: 502 }
-        )
+        logError('contact.send_failed', error, { clientIp })
+        return jsonError('Could not send your message right now. Please try again.', 502)
     }
 
     return NextResponse.json({ success: true })

@@ -9,6 +9,7 @@ import {
     getAdminSessionCookieOptions,
 } from '@/app/lib/admin-session-token'
 import { getAuthenticatedAdmin } from '@/app/lib/admin-auth'
+import { logError } from '@/app/lib/logger'
 import { getClientIp } from '@/app/lib/request-ip'
 import { createRateLimiter } from '@/app/lib/rate-limit'
 
@@ -89,7 +90,7 @@ export async function POST(request: Request) {
             email: admin.email,
         })
     } catch (error) {
-        console.error('Admin session token creation failed:', error)
+        logError('admin.session_token_create_failed', error, { adminId: admin.id })
         return NextResponse.json({ error: 'Server auth is not configured.' }, { status: 500 })
     }
 

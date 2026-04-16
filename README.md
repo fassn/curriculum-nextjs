@@ -150,6 +150,7 @@ pg_dump "$DATABASE_URL" > pre-cutover-$(date +%F-%H%M%S).sql
    - Confirm service is marked healthy/running after deployment.
 
 7. **Post-deploy smoke checks**
+   - `GET /api/health` returns `{ "status": "ok" }`.
    - `GET /blog` returns posts.
    - Sign in via `/signin` with admin credentials.
    - Create and edit a post from `/admin`.

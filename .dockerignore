@@ -8,5 +8,6 @@
 /out/
 /build
 
-.env*.local
+.env*
+!.env.example
 .vercel

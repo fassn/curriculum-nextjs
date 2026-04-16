@@ -1,17 +1,13 @@
 import { NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
 import { prisma } from '@/app/lib/prisma'
+import { jsonError } from '@/app/lib/api-response'
 import { getAuthenticatedAdmin, hasValidAdminCsrfToken } from '@/app/lib/admin-auth'
+import { formatFrenchDate } from '@/app/lib/date-format'
+import { logError } from '@/app/lib/logger'
+import { parsePostPayload } from '@/app/lib/validation'
 
 export const runtime = 'nodejs'
-
-function formatFrenchDate(date: Date): string {
-    return new Intl.DateTimeFormat('fr-FR', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-    }).format(date)
-}
 
 export async function GET(
     _request: Request,
@@ -23,7 +19,7 @@ export async function GET(
     })
 
     if (!post) {
-        return NextResponse.json({ error: 'Post not found.' }, { status: 404 })
+        return jsonError('Post not found.', 404)
     }
 
     return NextResponse.json({
@@ -40,43 +36,34 @@ export async function PUT(
 ) {
     const admin = await getAuthenticatedAdmin()
     if (!admin) {
-        return NextResponse.json({ error: 'Unauthorized.' }, { status: 401 })
+        return jsonError('Unauthorized.', 401)
     }
 
     const isValidCsrfToken = await hasValidAdminCsrfToken(request)
     if (!isValidCsrfToken) {
-        return NextResponse.json({ error: 'Invalid CSRF token.' }, { status: 403 })
+        return jsonError('Invalid CSRF token.', 403)
     }
 
     const { postId } = await params
     const body = await request.json().catch(() => null)
-
-    if (!body || typeof body !== 'object' || typeof (body as Record<string, unknown>).content !== 'string') {
-        return NextResponse.json({ error: 'Invalid request payload.' }, { status: 400 })
-    }
-
-    const content = (body as Record<string, string>).content.trim()
-    if (!content) {
-        return NextResponse.json({ error: 'Post content is required.' }, { status: 400 })
-    }
-
-    if (content.length > 100000) {
-        return NextResponse.json({ error: 'Post content is too long.' }, { status: 400 })
+    const parsedPayload = parsePostPayload(body)
+    if (!parsedPayload.ok) {
+        return jsonError(parsedPayload.error, 400)
     }
 
     try {
         const updatedPost = await prisma.post.update({
             where: { id: postId },
-            data: { content },
+            data: { content: parsedPayload.data.content },
         })
 
         return NextResponse.json({ id: updatedPost.id })
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-            return NextResponse.json({ error: 'Post not found.' }, { status: 404 })
+            return jsonError('Post not found.', 404)
         }
 
-        console.error('Post update failed:', error)
-        return NextResponse.json({ error: 'Could not update post.' }, { status: 500 })
+        logError('posts.update_failed', error, { postId, adminId: admin.id })
+        return jsonError('Could not update post.', 500)
     }
 }
