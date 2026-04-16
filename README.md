@@ -91,6 +91,9 @@ For admin authentication, set:
 `ADMIN_SESSION_SECRET` (long random string),
 `ADMIN_EMAIL`, and `ADMIN_PASSWORD`.
 
+At container startup, `npm run env:check` now validates required production
+environment variables and exits early if configuration is missing/invalid.
+
 Container startup now runs Prisma migration automatically by default
 (`RUN_DB_MIGRATIONS=true`).
 

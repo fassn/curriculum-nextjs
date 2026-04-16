@@ -39,4 +39,5 @@ echo "Seeding sample posts..."
 npm run db:seed:sample-posts
 
 echo "Bootstrap complete."
-echo "DATABASE_URL=${DATABASE_URL}"
+masked_database_url="$(printf '%s' "${DATABASE_URL}" | sed -E 's#(postgres(ql)?://[^:/@]+:)[^@]*@#\1***@#')"
+echo "DATABASE_URL=${masked_database_url}"

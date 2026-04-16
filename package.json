@@ -17,6 +17,7 @@
     "db:local:bootstrap": "bash ./scripts/db-local-bootstrap.sh",
     "db:local:reset": "bash ./scripts/db-local-reset.sh",
     "db:generate": "prisma generate",
+    "env:check": "node scripts/check-env.mjs",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:migrate:status": "prisma migrate status",
     "db:seed:admin": "node prisma/scripts/seed-admin-user.mjs",

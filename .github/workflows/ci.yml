@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  lint-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npm run db:generate
+
+      - name: Validate environment schema script
+        run: npm run env:check
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/db?schema=public
+          ADMIN_SESSION_SECRET: 12345678901234567890123456789012
+          RECAPTCHA_SECRET: recaptcha-secret
+          RECAPTCHA_MIN_SCORE: "0.5"
+          SMTP_HOST: smtp.example.com
+          SMTP_PORT: "465"
+          SMTP_USER: smtp-user
+          SMTP_PASS: smtp-pass
+          CONTACT_TO_EMAIL: to@example.com
+          CONTACT_FROM_EMAIL: from@example.com
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Test (if present)
+        run: npm run test --if-present

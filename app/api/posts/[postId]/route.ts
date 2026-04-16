@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { Prisma } from '@prisma/client'
 import { prisma } from '@/app/lib/prisma'
 import { getAuthenticatedAdmin, hasValidAdminCsrfToken } from '@/app/lib/admin-auth'
 
@@ -71,6 +72,10 @@ export async function PUT(
 
         return NextResponse.json({ id: updatedPost.id })
     } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+            return NextResponse.json({ error: 'Post not found.' }, { status: 404 })
+        }
+
         console.error('Post update failed:', error)
         return NextResponse.json({ error: 'Could not update post.' }, { status: 500 })
     }

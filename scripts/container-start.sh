@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 set -eu
 
+echo "[startup] Validating environment..."
+npm run env:check
+
 if [ "${RUN_DB_MIGRATIONS:-true}" = "true" ]; then
   echo "[startup] Running Prisma migrations..."
   npm run db:migrate:deploy
