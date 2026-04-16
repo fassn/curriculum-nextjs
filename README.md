@@ -104,3 +104,64 @@ valid CSRF token (`X-CSRF-Token`) matching the `admin_csrf` cookie.
 
 `POST /api/admin/session` is rate-limited by client IP to reduce brute-force
 sign-in attempts.
+
+### Production cutover checklist
+
+1. **Open the target service in Coolify**
+   - Go to: **Project -> Environment -> Resource (your app service)**.
+   - Confirm you are in the correct environment (staging vs production).
+
+2. **Update environment variables in Coolify UI**
+   - Go to: **Environment Variables** tab.
+   - Ensure these are set and saved:
+     `DATABASE_URL`, `ADMIN_SESSION_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`,
+     `SERVER_ACTIONS_ALLOWED_ORIGINS`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`,
+     `SMTP_PASS`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`,
+     `NEXT_PUBLIC_RECAPTCHA_KEY`, `RECAPTCHA_SECRET`
+     (optional `RECAPTCHA_MIN_SCORE`).
+   - Keep the old values copied somewhere safe before changing them.
+
+3. **Take a PostgreSQL backup before migration**
+   - From your DB host shell (or a trusted admin runner), run:
+
+```bash
+pg_dump "$DATABASE_URL" > pre-cutover-$(date +%F-%H%M%S).sql
+```
+
+4. **Deploy the new application version in Coolify**
+   - Go to: **Deployments** tab.
+   - Trigger deployment of the new commit/image.
+   - Keep the previous successful deployment visible in history for rollback.
+
+5. **Run migration + admin seed on the deployed environment**
+   - Go to: **Terminal** (or command execution UI) for the running service.
+   - Execute:
+
+```bash
+npm run db:migrate:deploy
+npm run db:seed:admin
+```
+
+6. **Watch logs and health in Coolify**
+   - Go to: **Logs** tab and confirm no startup/runtime errors.
+   - Confirm service is marked healthy/running after deployment.
+
+7. **Post-deploy smoke checks**
+   - `GET /blog` returns posts.
+   - Sign in via `/signin` with admin credentials.
+   - Create and edit a post from `/admin`.
+   - Submit the contact form once and confirm email delivery.
+
+### Rollback checklist
+
+1. **Application rollback**
+   - Go to: **Deployments** tab in Coolify.
+   - Select the last known-good deployment and redeploy it.
+   - Re-check logs and health after rollback deployment finishes.
+
+2. **Database rollback (only if needed)**
+   - Restore from the backup taken before cutover:
+
+```bash
+psql "$DATABASE_URL" < pre-cutover-YYYY-MM-DD-HHMMSS.sql
+```
